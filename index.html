@@ -131,7 +131,7 @@ textarea { resize: vertical; }
 #print { display: none; }
 
 /* ---------- Print ---------- */
-@page { size: A4; margin: 12mm 12mm 14mm; @bottom-center { content: counter(page) " / " counter(pages); font-family: Vazirmatn, Tahoma; font-size: 8pt; color: #666; } }
+@page { size: A4; margin: 12mm 12mm 14mm; @bottom-center { content: "صفحه " counter(page) " از " counter(pages); font-family: Vazirmatn, Tahoma; font-size: 8pt; color: #666; } }
 @media print {
   body { background: #fff; font-size: 10pt; line-height: 1.6; }
   #app, .toast, .modal-bg { display: none !important; }
@@ -229,6 +229,42 @@ table.mini td:last-child { text-align: left; }
 .pend { display: flex; justify-content: space-between; align-items: center; gap: .5rem; border-top: 1px solid var(--line); padding: .55rem 0; }
 .pend.over { border-right: 3px solid var(--nc); padding-right: .5rem; }
 @media (max-width: 420px) { .nav-b { padding: .3rem .45rem; font-size: .88rem; } }
+
+/* ---------- Bulk answers, conclusion, on-site delivery ---------- */
+.bulk { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin: .4rem 0 0; }
+.bulk .btn { min-height: 46px; font-weight: 700; }
+.bulk-c { background: var(--c-bg); border-color: var(--c); color: var(--c); }
+.bulk-na { background: var(--na-bg); border-color: var(--na); color: var(--na); }
+textarea.concl { width: 100%; min-height: max(320px, calc(100vh - 360px)); padding: .7rem; border: 1px solid var(--line); border-radius: 10px; line-height: 1.9; }
+.notice-prev { border: 1px solid #f1b8b2; background: #fffafa; border-radius: 10px; padding: .6rem .8rem; }
+.notice-prev ol { padding-right: 1.2rem; margin: .4rem 0 0; font-size: .9rem; }
+.notice-prev li { margin-bottom: .5rem; }
+.muted-s { color: var(--muted); font-weight: 400; font-size: .8rem; }
+.danger-box { border: 1px solid #f1b8b2; border-radius: 10px; padding: .6rem .8rem; margin-top: .8rem; }
+.chk { display: flex; align-items: center; gap: .4rem; margin: .4rem 0; }
+.modal input[data-modal-input] { width: 100%; padding: .5rem; border: 1px solid var(--line); border-radius: 8px; margin-top: .5rem; }
+.p-deliv { display: grid; grid-template-columns: 1fr 50mm; gap: 3mm; align-items: start; break-inside: avoid; }
+.p-rsig { border: .6pt solid #777; text-align: center; padding: 1.5mm; min-height: 24mm; }
+.p-rsig img, .p-ack-sign img { max-height: 20mm; max-width: 48mm; }
+.p-ack-sign div { font-size: 9pt; color: #555; }
+.p-sigrow { display: grid; grid-template-columns: 1fr 62mm; gap: 5mm; align-items: start; margin-top: 5mm; break-inside: avoid; }
+.p-sigrow .p-ack { margin-top: 0; }
+.p-sigrow .p-sign { margin: 0; width: auto; }
+
+/* ---------- Full-screen signature ---------- */
+.sig-tap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3rem; width: 100%; min-height: 150px; border: 2px dashed var(--pri); border-radius: 12px; background: #f6f9fd; color: var(--pri); cursor: pointer; padding: .6rem; }
+.sig-tap span { color: var(--muted); font-size: .8rem; }
+.sig-tap.done { border-style: solid; border-color: var(--line); background: #fff; }
+.sig-tap img { max-height: 120px; max-width: 100%; }
+.sign-fs { position: fixed; inset: 0; z-index: 70; background: #fff; display: flex; flex-direction: column; padding: calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom)); }
+.sign-fs-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding-bottom: 8px; flex-wrap: wrap; }
+.sign-fs-head span { color: var(--muted); font-size: .85rem; }
+.sign-fs-area { position: relative; flex: 1; min-height: 0; border: 2px dashed var(--line); border-radius: 14px; overflow: hidden; }
+.sign-fs-area canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; z-index: 1; }
+.sign-fs-line { position: absolute; left: 8%; right: 8%; bottom: 28%; border-bottom: 1px solid #c9d1db; }
+.sign-fs-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 10px; }
+.sign-fs-btns .btn { min-height: 54px; font-size: 1rem; font-weight: 700; }
+body.no-scroll { overflow: hidden; }
 </style>
 </head>
 <body>
@@ -374,14 +410,18 @@ function readFileAsText(file) {
 }
 async function compressImage(file, maxSide = 1280, type = 'image/jpeg', quality = 0.72) {
   const url = await readFileAsDataURL(file);
-  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
-  const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('unsupported image')); i.src = url; });
+  // SVGs without width/height report a zero size; rasterize them at maxSide.
+  const w = img.naturalWidth || maxSide, h = img.naturalHeight || maxSide;
+  const scale = Math.min(1, maxSide / Math.max(w, h));
   const c = document.createElement('canvas');
-  c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+  c.width = Math.round(w * scale); c.height = Math.round(h * scale);
   const ctx = c.getContext('2d');
   if (type === 'image/jpeg') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); }
   ctx.drawImage(img, 0, 0, c.width, c.height);
-  return c.toDataURL(type, quality);
+  const out = c.toDataURL(type, quality);
+  if (out.length < 100) throw new Error('empty image');
+  return out;
 }
 function downloadBlob(blob, name) {
   const a = document.createElement('a');
@@ -460,13 +500,13 @@ const XLSX = (() => {
 })();
 
 // ---------- Signature pad ----------
-function attachSignaturePad(canvas) {
+function attachSignaturePad(canvas, lineWidth = 2.4) {
   const ctx = canvas.getContext('2d');
   const ratio = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width * ratio; canvas.height = rect.height * ratio;
   ctx.scale(ratio, ratio);
-  ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0b2a6b';
+  ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0b2a6b';
   let drawing = false, dirty = false, last = null;
   const pos = (e) => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   canvas.addEventListener('pointerdown', e => { drawing = true; last = pos(e); canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
@@ -694,6 +734,7 @@ function renderReport(insp) {
           <td class="c-s">${labels[a.s] || '—'}</td><td class="c-r">${a.s === 'NC' ? RISK_LABEL[a.risk] || '—' : ''}</td><td>${notes}</td></tr>`;
       }).join('')}</tbody></table>`).join('')}
     <h2>جمع‌بندی و نظر بازرس</h2><div class="p-para">${esc(insp.conclusion) || '—'}</div>
+    ${deliveryReport(insp)}
     ${signature(insp)}
     ${insp.photos.length ? `<div class="p-photos-page"><h2>پیوست: تصاویر</h2><div class="p-photos">${insp.photos.map((p, i) =>
       `<figure><img src="${S.photoCache[p.id] || ''}" alt=""><figcaption>${fa(i + 1)}. ${esc(p.caption)}</figcaption></figure>`).join('')}</div></div>` : ''}
@@ -713,6 +754,26 @@ function accidentReport(ac) {
     <h3>تحلیل علل</h3>
     ${kv([['علت مستقیم', esc(ac.directCause) || '—'], ['علل ریشه‌ای', esc(ac.rootCause) || '—'], ['قصور کارفرما', esc(ac.employerFault) || '—'], ['سهم قصور کارفرما', ac.faultPercent ? fa(ac.faultPercent) + '٪' : '—']])}
     ${ac.recommendations ? `<h3>توصیه‌ها</h3><div class="p-para">${esc(ac.recommendations)}</div>` : ''}`;
+}
+
+function deliveryReport(insp) {
+  const d = insp.delivery;
+  if (!d || (!d.name && !d.signature)) return '<h2>ابلاغ در محل</h2><div class="p-para">ابلاغ در محل انجام نشده است.</div>';
+  return `<h2>ابلاغ در محل</h2>
+    <div class="p-deliv">${kv([['نام ابلاغ‌شونده', esc(d.name) || '—'], ['سمت', esc(d.role) || '—'], ['کد ملی', dash(d.nid)], ['تاریخ و ساعت ابلاغ', `${dash(d.date)}${d.time ? '، ساعت ' + fa(d.time) : ''}`]])}
+    <div class="p-rsig"><div class="muted">امضای ابلاغ‌شونده</div>${d.signature ? `<img src="${d.signature}" alt="">` : '<div class="muted">امضا نشده</div>'}</div></div>`;
+}
+
+function ackBox(insp) {
+  const d = insp.delivery;
+  if (d && d.signature) {
+    return `<div class="p-ack"><div class="p-ack-h">رسید ابلاغ</div>
+      <p>اینجانب <b>${esc(d.name)}</b> به سمت <b>${esc(d.role)}</b>${d.nid ? ` به کد ملی ${fa(d.nid)}` : ''} این ابلاغیه را در تاریخ ${fa(d.date)}${d.time ? ' ساعت ' + fa(d.time) : ''} در محل کارگاه دریافت نمودم.</p>
+      <div class="p-ack-sign"><img src="${d.signature}" alt=""><div>امضای ابلاغ‌شونده</div></div></div>`;
+  }
+  return `<div class="p-ack"><div class="p-ack-h">رسید ابلاغ</div>
+      <p>اینجانب .................................................... به سمت .............................. این ابلاغیه را در تاریخ ......../......../............ دریافت نمودم.</p>
+      <div class="p-ack-sign">امضا و مهر کارگاه</div></div>`;
 }
 
 function renderNotice(insp) {
@@ -737,10 +798,7 @@ function renderNotice(insp) {
     ${others.length ? `<table class="p-tbl"><thead><tr><th class="c-n">ردیف</th><th>شرح نقص</th><th>اقدام اصلاحی لازم</th><th class="c-r">سطح خطر</th><th class="c-s">مهلت</th><th class="c-s">تا تاریخ</th></tr></thead><tbody>
       ${others.map((x, i) => row(x, imminent.length + i + 1, false)).join('')}</tbody></table>` : ''}
     <p class="p-para">${esc(P.noticeOutro)}</p>
-    ${signature(insp)}
-    <div class="p-ack"><div class="p-ack-h">رسید ابلاغ</div>
-      <p>اینجانب .................................................... به سمت .............................. این ابلاغیه را در تاریخ ......../......../............ دریافت نمودم.</p>
-      <div class="p-ack-sign">امضا و مهر کارگاه</div></div>
+    <div class="p-sigrow">${ackBox(insp)}${signature(insp)}</div>
     ${S.settings.letterhead.footer ? `<div class="p-foot">${esc(S.settings.letterhead.footer)}</div>` : ''}
   </div>`;
 }
@@ -812,14 +870,15 @@ function exportExcel() {
     });
   });
   const sevRank = (v) => SEVERITIES.indexOf(v);
-  const s1 = [['شماره', 'تاریخ', 'نوع بازرسی', 'وضعیت', 'کارگاه', 'کد کارگاه', 'کارفرما', 'نوع فعالیت', 'تعداد کارگران', 'منطبق', 'نامنطبق', 'غیرمرتبط', 'درصد انطباق', 'خطر قریب‌الوقوع', 'تعداد مصدومان', 'بیشترین شدت آسیب', 'عطف به']];
+  const s1 = [['شماره', 'تاریخ', 'نوع بازرسی', 'وضعیت', 'کارگاه', 'کد کارگاه', 'کارفرما', 'نوع فعالیت', 'تعداد کارگران', 'منطبق', 'نامنطبق', 'غیرمرتبط', 'درصد انطباق', 'خطر قریب‌الوقوع', 'تعداد مصدومان', 'بیشترین شدت آسیب', 'عطف به', 'ابلاغ در محل', 'ابلاغ‌شونده']];
   const s2 = [['شماره', 'تاریخ', 'کارگاه', 'کارفرما', 'بخش', 'موضوع', 'سطح خطر', 'اقدام اصلاحی', 'مهلت (روز)', 'تا تاریخ', 'وضعیت پیگیری']];
   finalOrAll.forEach(i => {
     const st = stats(i), w = i.workplace, ac = i.accident;
     const workers = ['workersMale', 'workersFemale'].reduce((a, k) => a + (+w[k] || 0), 0);
     const worst = ac ? ac.victims.map(v => v.severity).filter(Boolean).sort((a, b) => sevRank(b) - sevRank(a))[0] || '' : '';
     s1.push([serialOf(i), i.date, i.type.name, i.status === 'final' ? 'نهایی' : 'پیش‌نویس', w.name, w.workshopCode, w.employer, w.activity, workers,
-      st.c, st.nc, st.na, st.pct ?? '', st.imminent, ac ? ac.victims.length : '', worst, i.followupOf?.serial || '']);
+      st.c, st.nc, st.na, st.pct ?? '', st.imminent, ac ? ac.victims.length : '', worst, i.followupOf?.serial || '',
+      i.delivery?.signature ? 'بله' : 'خیر', i.delivery?.signature ? `${i.delivery.name} (${i.delivery.role})` : '']);
     st.ncItems.forEach(({ sec, item, a }) => {
       const origId = item.id.startsWith('fu_') ? item.id.slice(3) : item.id;
       s2.push([serialOf(i), i.date, w.name, w.employer, sec.title, item.text, RISK_LABEL[a.risk] || '', a.action || '',
@@ -851,6 +910,89 @@ async function importPackage() {
   S.pkg = pkg; S.admin = false;
   await DB.put('kv', { ...pkg, id: 'package' });
   toast('بسته چک‌لیست وارد شد'); render();
+}
+
+// ---------- Monthly export for the center (format: docs/EXPORT_FORMAT.md) ----------
+const EXPORT_SCHEMA = 1;
+const monthLabel = (key) => { const [y, m] = key.split('/'); return `${JMONTHS[+m - 1]} ${faDigits(y)}`; };
+
+function monthsWithData() {
+  const n = {};
+  S.inspections.filter(i => i.status === 'final').forEach(i => { const k = Jalali.norm(i.date).slice(0, 7); if (k) n[k] = (n[k] || 0) + 1; });
+  return Object.entries(n).sort((a, b) => b[0].localeCompare(a[0])).map(([key, c]) => ({ key, n: c }));
+}
+
+function exportRecord(i, photos) {
+  const st = stats(i);
+  return {
+    id: i.id, serial: i.serial, rev: i.rev || 0, serialLabel: serialOf(i),
+    type: { id: i.type.id, name: i.type.name, kind: i.type.kind },
+    date: Jalali.norm(i.date), time: i.time || '', reason: i.reason || '', presentRep: i.presentRep || '',
+    createdAt: i.createdAt, finalizedAt: i.finalizedAt || null,
+    followupOf: i.followupOf || null,
+    workplace: i.workplace,
+    summary: { total: st.total, compliant: st.c, nonCompliant: st.nc, notApplicable: st.na, compliancePct: st.pct, imminent: st.imminent },
+    items: i.type.sections.flatMap(sec => sec.items.map((it, k) => {
+      const a = i.answers[it.id] || {}, nc = a.s === 'NC';
+      return {
+        sectionId: sec.id, section: sec.title, no: k + 1, itemId: it.id, text: it.text, ref: it.ref || '',
+        status: a.s || null, risk: nc ? a.risk || null : null, action: nc ? a.action || '' : '',
+        days: nc && a.risk !== 'X' ? (+a.days || null) : null,
+        due: nc ? (a.risk === 'X' ? Jalali.norm(i.date) : Jalali.addDays(i.date, a.days)) : null,
+        note: a.note || ''
+      };
+    })),
+    accident: i.accident || null,
+    conclusion: i.conclusion || '',
+    delivery: i.delivery && (i.delivery.name || i.delivery.signature) ? i.delivery : null,
+    photos: i.photos.map(p => photos ? { caption: p.caption || '', data: photos[p.id] || null } : { caption: p.caption || '' })
+  };
+}
+
+async function exportMonthly(key, withPhotos) {
+  flushAll();
+  if (!key) return;
+  const list = S.inspections.filter(i => i.status === 'final' && Jalali.norm(i.date).startsWith(key))
+    .sort((a, b) => Jalali.norm(a.date).localeCompare(Jalali.norm(b.date)));
+  let photos = null;
+  if (withPhotos) {
+    photos = {};
+    for (const i of list) for (const p of i.photos) photos[p.id] = (await DB.get('photos', p.id))?.data || null;
+  }
+  const p = S.settings.profile, [y, m] = key.split('/');
+  const data = {
+    format: 'inspection-monthly-export', schemaVersion: EXPORT_SCHEMA, appVersion: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    inspector: { code: p.code, name: p.name, title: p.title },
+    period: { year: +y, month: +m, from: `${key}/01`, to: `${key}/31` },
+    checklistVersion: S.pkg.version,
+    counts: { inspections: list.length, deficiencies: list.reduce((a, i) => a + stats(i).nc, 0) },
+    inspections: list.map(i => exportRecord(i, photos))
+  };
+  downloadBlob(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }), `monthly-${p.code || 'inspector'}-${y}-${m}.json`);
+  S.settings.exports = { ...(S.settings.exports || {}), [key]: new Date().toISOString() };
+  saveSettings(); toast('فایل ماهانه دریافت شد'); render();
+}
+
+// full = false: inspections, photos and workplaces only; settings, signature, logo and checklists stay.
+async function clearData(full) {
+  const what = full
+    ? 'همه اطلاعات این دستگاه، شامل بازرسی‌ها، عکس‌ها، کارگاه‌ها، مشخصات بازرس، امضا، لوگو، سربرگ و چک‌لیست‌ها حذف می‌شود و برنامه مثل روز اول خالی می‌شود. <b>شماره‌گذاری گزارش‌ها از ۰۰۰۱ دوباره شروع می‌شود</b> و ممکن است با شماره‌های قبلی تکراری شود؛ فقط برای واگذاری گوشی یا شروع دوباره استفاده کنید.'
+    : 'همه بازرسی‌ها، عکس‌ها و فهرست کارگاه‌ها از این دستگاه حذف می‌شود. مشخصات بازرس، امضا، لوگو، سربرگ، چک‌لیست‌ها و شماره‌گذاری گزارش‌ها باقی می‌ماند.';
+  S._mi = '';
+  const ok = await modal(full ? 'بازنشانی کامل برنامه' : 'پاک کردن بازرسی‌ها',
+    `<p>${what}</p><p>پیش از حذف، فایل پشتیبان به‌طور خودکار دریافت می‌شود. این کار قابل بازگشت نیست مگر با همان فایل پشتیبان.</p>
+     <p>برای تأیید، کلمه <b>حذف</b> را بنویسید:</p><input data-modal-input autocomplete="off">`,
+    [['انصراف', false], ['دریافت پشتیبان و حذف', true]]);
+  if (!ok) return;
+  if ((S._mi || '').trim() !== 'حذف') return modal('لغو شد', 'عبارت تأیید درست وارد نشد؛ چیزی حذف نشد.');
+  if (S.inspections.length || S.workplaces.length) await exportBackup();
+  // Give the browser a moment to start the backup download before the data goes away.
+  await new Promise(r => setTimeout(r, 800));
+  await DB.clear('inspections'); await DB.clear('photos'); await DB.clear('workplaces');
+  if (full) { await DB.clear('kv'); location.reload(); return; }
+  S.inspections = []; S.workplaces = []; S.photoCache = {};
+  toast('بازرسی‌ها پاک شد'); go('home');
 }
 
 ;
@@ -992,7 +1134,7 @@ function renderDashPrint() {
 
 ;
 // ---------- Constants ----------
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 const RISKS = [['L', 'کم'], ['M', 'متوسط'], ['H', 'زیاد'], ['X', 'خطر قریب‌الوقوع']];
 const RISK_LABEL = Object.fromEntries(RISKS);
 const KIND_LABEL = { routine: 'موردی', accident: 'حادثه', followup: 'پیگیری' };
@@ -1008,6 +1150,7 @@ const WP_FIELDS = [
   ['workersFemale', 'تعداد کارگران زن', 'num'], ['workersUnder18', 'تعداد کارگران زیر ۱۸ سال', 'num']
 ];
 const BACKUP_DAYS = 7;
+const RECIPIENT_ROLES = ['کارفرما', 'مدیرعامل', 'مدیر کارگاه', 'سرپرست کارگاه', 'نماینده کارفرما', 'مسئول ایمنی', 'سایر'];
 
 const S = {
   settings: null, pkg: null, inspections: [], workplaces: [],
@@ -1019,7 +1162,7 @@ const DEFAULT_SETTINGS = () => ({
   profile: { name: '', code: '', title: 'بازرس کار' },
   signature: null, logo: null,
   letterhead: { line1: 'جمهوری اسلامی ایران', line2: 'وزارت تعاون، کار و رفاه اجتماعی', line3: 'اداره کل تعاون، کار و رفاه اجتماعی استان ...', footer: '' },
-  seq: {}, lastBackup: null
+  seq: {}, lastBackup: null, exports: {}
 });
 
 // ---------- Small helpers ----------
@@ -1139,7 +1282,8 @@ function pushNav(replace) {
   try { history[replace ? 'replaceState' : 'pushState'](st, ''); } catch (e) { /* history unavailable */ }
 }
 window.addEventListener('popstate', e => {
-  if (!e.state) return;
+  if (S.closeSign) { S.closeSign(null, true); return; }
+  if (!e.state || !e.state.view) return;
   flushAll(); S.view = e.state.view; S.params = e.state.params; render(); window.scrollTo(0, 0);
 });
 
@@ -1157,13 +1301,55 @@ function render() {
 }
 
 function afterRender() {
-  const pad = $('#sigpad');
-  if (pad) S.sigPad = attachSignaturePad(pad);
+
+
 }
 
 const field = (label, attrs, value, kind) => kind === 'area'
   ? `<label class="fld"><span>${label}</span><textarea ${attrs} rows="2">${esc(value)}</textarea></label>`
   : `<label class="fld"><span>${label}</span><input ${attrs} ${kind === 'num' ? 'inputmode="numeric" data-num' : kind === 'digits' ? 'data-num' : ''} value="${esc(kind ? faDigits(value) : value)}"></label>`;
+
+// Full-screen signature pad. Resolves with a PNG data URL, or null when cancelled.
+function signFullscreen(title) {
+  return new Promise(resolve => {
+    const m = document.createElement('div');
+    m.className = 'sign-fs';
+    m.innerHTML = `<div class="sign-fs-head"><b>${esc(title)}</b><span>با انگشت داخل کادر امضا کنید</span></div>
+      <div class="sign-fs-area"><canvas></canvas><div class="sign-fs-line"></div></div>
+      <div class="sign-fs-btns"><button class="btn" data-k="cancel">انصراف</button><button class="btn" data-k="clear">امضای مجدد</button><button class="btn primary" data-k="save">ذخیره</button></div>`;
+    document.body.appendChild(m);
+    document.body.classList.add('no-scroll');
+    let pad;
+    // A fresh canvas per size, so rotating the phone before signing gives a correctly scaled pad.
+    const mount = () => {
+      const old = m.querySelector('canvas'), c = document.createElement('canvas');
+      old.replaceWith(c); pad = attachSignaturePad(c, 3.2);
+    };
+    requestAnimationFrame(mount);
+    const onResize = () => { if (!pad || pad.isEmpty()) mount(); };
+    window.addEventListener('resize', onResize);
+    history.pushState({ sign: true }, '');
+    const close = (val, fromPop) => {
+      S.closeSign = null;
+      window.removeEventListener('resize', onResize);
+      document.body.classList.remove('no-scroll');
+      m.remove();
+      if (!fromPop) history.back();
+      resolve(val);
+    };
+    S.closeSign = close;
+    m.addEventListener('click', e => {
+      const k = e.target.closest('[data-k]')?.dataset.k;
+      if (k === 'clear') pad.clear();
+      else if (k === 'cancel') close(null);
+      else if (k === 'save') {
+        const d = pad.toDataURL();
+        if (!d) return toast('ابتدا داخل کادر امضا کنید');
+        close(d);
+      }
+    });
+  });
+}
 
 // ----- Home -----
 function viewHome() {
@@ -1223,7 +1409,7 @@ function stepsOf(insp) {
   const s = [{ key: 'info', title: 'اطلاعات بازرسی' }, { key: 'wp', title: 'مشخصات کارگاه و کارفرما' }];
   if (insp.accident) s.push({ key: 'acc', title: 'شرح حادثه' }, { key: 'victims', title: 'مصدومان' }, { key: 'causes', title: 'شاهدان و تحلیل علل' });
   insp.type.sections.forEach(sec => s.push({ key: 'sec:' + sec.id, title: sec.title, sec }));
-  s.push({ key: 'photos', title: 'تصاویر' }, { key: 'concl', title: 'جمع‌بندی بازرس' },
+  s.push({ key: 'photos', title: 'تصاویر' }, { key: 'concl', title: 'جمع‌بندی بازرس' }, { key: 'deliver', title: 'ابلاغ در محل' },
     { key: 'final', title: insp.status === 'final' ? 'گزارش و ابلاغیه' : 'بررسی و نهایی‌سازی' });
   return s;
 }
@@ -1245,6 +1431,10 @@ function issuesOf(insp) {
       if (!v.severity) add('victims', `شدت آسیب مصدوم ${faDigits(i + 1)} انتخاب نشده.`);
     });
   }
+  const d = insp.delivery || {};
+  if (d.signature && !d.name) add('deliver', 'نام شخص ابلاغ‌شونده وارد نشده.');
+  if (d.signature && !d.role) add('deliver', 'سمت شخص ابلاغ‌شونده انتخاب نشده.');
+  if (d.date && !Jalali.valid(d.date)) add('deliver', 'تاریخ ابلاغ نامعتبر است.');
   insp.type.sections.forEach(sec => sec.items.forEach((item, i) => {
     const a = insp.answers[item.id] || {}, k = 'sec:' + sec.id, where = `ردیف ${faDigits(i + 1)}`;
     if (!a.s) add(k, `${where}: وضعیت انتخاب نشده.`);
@@ -1323,15 +1513,21 @@ function stepBody(insp, step) {
         <div class="photos">${insp.photos.map((p, i) => `<div class="ph-item">${S.photoCache[p.id] ? `<img src="${S.photoCache[p.id]}" alt="">` : '<div class="ph-ph">…</div>'}
           <input placeholder="شرح تصویر" data-f="photos.${i}.caption" value="${esc(p.caption)}">${insp.status === 'final' ? '' : `<button type="button" class="btn sm danger" data-act="rmPhoto" data-i="${i}">حذف</button>`}</div>`).join('') || '<div class="empty">تصویری افزوده نشده است.</div>'}</div></div>`;
     case 'concl':
-      return `<div class="card"><h3>جمع‌بندی و نظر بازرس</h3><textarea data-f="conclusion" rows="6">${esc(insp.conclusion)}</textarea></div>`;
+      return `<div class="card"><h3>جمع‌بندی و نظر بازرس</h3><textarea class="concl" data-f="conclusion" placeholder="جمع‌بندی وضعیت کارگاه، مهم‌ترین نواقص و نظر بازرس">${esc(insp.conclusion)}</textarea></div>`;
+    case 'deliver': return deliverHtml(insp);
     default: return sectionStepHtml(insp, step.sec);
   }
 }
 
 function sectionStepHtml(insp, sec) {
+  const fu = insp.type.kind === 'followup';
+  const bulk = insp.status === 'final' ? '' : `<div class="bulk">
+      <button type="button" class="btn bulk-c" data-act="fillAll" data-sec="${sec.id}" data-v="C">✓ ${fu ? 'همه رفع شده' : 'همه منطبق'}</button>
+      <button type="button" class="btn bulk-na" data-act="fillAll" data-sec="${sec.id}" data-v="NA">${fu ? 'همه موضوعیت ندارد' : 'همه غیرمرتبط'}</button>
+    </div><p class="hint">موارد ${fu ? 'رفع نشده' : 'نامنطبق'} با این دکمه‌ها تغییر نمی‌کنند؛ پس از آن، موارد استثنا را جداگانه تغییر دهید.</p>`;
   return `<div class="card"><div class="row-between"><h3>${esc(sec.title)}</h3><span class="prog" id="pg-${sec.id}">${progSec(insp, sec)}</span></div>
+    ${bulk}
     ${sec.items.map((it, i) => itemHtml(insp, it, i + 1)).join('')}
-    ${insp.status === 'final' ? '' : `<button type="button" class="btn sm ghost" data-act="fillC" data-sec="${sec.id}">موارد بی‌پاسخ این بخش: ${insp.type.kind === 'followup' ? 'رفع شده' : 'منطبق'}</button>`}
   </div>`;
 }
 
@@ -1393,6 +1589,28 @@ function itemHtml(insp, item, n) {
       <label class="fld short"><span>مهلت رفع (روز)${a.risk === 'X' ? ' — فوری' : ''}</span><input inputmode="numeric" data-num data-f="answers.${item.id}.days" value="${esc(faDigits(a.days))}"></label>
     </div>` : ''}
     <input class="note" placeholder="توضیحات (اختیاری)" data-f="answers.${item.id}.note" value="${esc(a.note)}">
+  </div>`;
+}
+
+function deliverHtml(insp) {
+  const d = insp.delivery || {}, st = stats(insp), ro = insp.status === 'final';
+  const items = st.ncItems.map(({ item, a }) => `<li class="${a.risk === 'X' ? 't-x' : ''}"><b>${esc(item.text)}</b><br>اقدام لازم: ${esc(a.action || '—')}<br>
+    ${a.risk === 'X' ? 'مهلت: فوری (خطر قریب‌الوقوع)' : `مهلت: ${faDigits(a.days || '—')} روز${Jalali.valid(insp.date) && a.days ? ` (تا ${faDigits(Jalali.addDays(insp.date, a.days))})` : ''}`}</li>`).join('');
+  return `<div class="card"><h3>ابلاغ در محل <small class="muted-s">(اختیاری)</small></h3>
+    <p class="hint">گوشی را به کارفرما یا نماینده او بدهید تا موارد زیر را ببیند و امضا کند. نام و امضای او در گزارش کامل و در کادر «رسید ابلاغ» ابلاغیه چاپ می‌شود. اگر ابلاغ در محل انجام نمی‌شود، این مرحله را خالی بگذارید.</p>
+    <div class="notice-prev">${st.nc ? `<b>نواقص قابل ابلاغ (${faDigits(st.nc)} مورد)</b><ol>${items}</ol>` : '<b>این بازرسی نقصی ندارد؛ امضا به‌منزله رؤیت گزارش بازرسی است.</b>'}</div>
+  </div>
+  <div class="card"><h3>مشخصات شخص ابلاغ‌شونده</h3><div class="grid">
+    ${field('نام و نام خانوادگی', 'data-f="delivery.name"', d.name)}
+    ${selField('سمت', 'delivery.role', d.role, RECIPIENT_ROLES)}
+    ${field('کد ملی (اختیاری)', 'data-f="delivery.nid"', d.nid, 'num')}
+    ${field('تاریخ ابلاغ', `data-f="delivery.date" placeholder="${faDigits(Jalali.today())}"`, d.date, 'digits')}
+    ${field('ساعت ابلاغ', 'data-f="delivery.time" placeholder="۱۱:۰۰"', d.time, 'digits')}
+  </div>
+  <h4>امضای ابلاغ‌شونده</h4>
+  ${ro ? (d.signature ? `<div class="sig-tap done"><img src="${d.signature}" alt="امضا"></div>` : '<p class="hint">امضا نشده است.</p>')
+    : `<button type="button" class="sig-tap ${d.signature ? 'done' : ''}" data-act="rcSign">${d.signature ? `<img src="${d.signature}" alt="امضا"><span>برای امضای مجدد لمس کنید</span>` : '<b>✍ برای امضا لمس کنید</b><span>صفحه امضا به‌صورت تمام‌صفحه باز می‌شود</span>'}</button>
+       ${d.signature ? '<div class="actions"><button type="button" class="btn danger" data-act="rcRemove">حذف امضا</button></div>' : ''}`}
   </div>`;
 }
 
@@ -1472,9 +1690,8 @@ function viewSettings() {
   </div></div>
   <div class="card"><h3>امضای بازرس</h3>
     ${st.signature ? `<div class="sig-cur"><img src="${st.signature}" alt="امضا"></div>` : '<p class="hint">امضایی ثبت نشده است.</p>'}
-    <p class="hint">با انگشت یا ماوس داخل کادر امضا کنید، یا تصویر امضای اسکن‌شده را بارگذاری کنید.</p>
-    <canvas id="sigpad" class="sigpad"></canvas>
-    <div class="actions"><button class="btn primary" data-act="sigSave">ذخیره امضا</button><button class="btn" data-act="sigClear">پاک کردن کادر</button><button class="btn" data-act="sigUpload">بارگذاری تصویر</button>${st.signature ? '<button class="btn danger" data-act="sigRemove">حذف امضا</button>' : ''}</div>
+    <p class="hint">کادر را لمس کنید تا صفحه امضا تمام‌صفحه باز شود، یا تصویر امضای اسکن‌شده را بارگذاری کنید.</p>
+    <div class="actions"><button class="btn primary" data-act="sigSign">${st.signature ? 'امضای مجدد' : '✍ امضا'}</button><button class="btn" data-act="sigUpload">بارگذاری تصویر</button>${st.signature ? '<button class="btn danger" data-act="sigRemove">حذف امضا</button>' : ''}</div>
   </div>
   <div class="card"><h3>سربرگ و لوگو</h3>
     <div class="logo-row">${st.logo ? `<img class="logo-prev" src="${st.logo}" alt="لوگو">` : '<div class="logo-prev empty-logo">بدون لوگو</div>'}
@@ -1486,10 +1703,7 @@ function viewSettings() {
       ${field('پانویس (نشانی و تلفن اداره)', 'data-s="letterhead.footer"', lh.footer)}
     </div></div>
   ${installCard()}
-  <div class="card"><h3>داده‌ها و پشتیبان</h3>
-    <p class="hint">همه اطلاعات فقط روی همین دستگاه ذخیره می‌شود. به‌طور منظم پشتیبان بگیرید و فایل را در جای امن نگه دارید.${st.lastBackup ? ` آخرین پشتیبان: ${faDigits(Jalali.fromDate(new Date(st.lastBackup)))}` : ''}</p>
-    <div class="actions"><button class="btn primary" data-act="backup">دریافت فایل پشتیبان</button><button class="btn" data-act="restore">بازیابی از پشتیبان</button><button class="btn" data-act="excel">خروجی اکسل</button></div>
-  </div>
+  ${dataCard()}
   <div class="card"><h3>چک‌لیست‌ها</h3>
     <p class="hint">نسخه بسته چک‌لیست فعلی: ${esc(faDigits(S.pkg.version))}${S.pkg.updatedAt ? ' — ' + faDigits(Jalali.fromDate(new Date(S.pkg.updatedAt))) : ''}. فایل بسته چک‌لیست را از مدیر دریافت و وارد کنید.</p>
     <div class="actions"><button class="btn" data-act="importPkg">ورود بسته چک‌لیست</button><button class="btn ghost" data-act="go" data-v="admin">بخش مدیریت</button></div>
@@ -1508,6 +1722,27 @@ function installCard() {
   else install = '<p class="hint">از منوی ⋮ در Chrome گزینه «Install app» یا «Add to Home screen» را بزنید.</p>';
   return `<div class="card"><h3>نصب و ذخیره‌سازی</h3>${install}
     <p class="hint">محل ذخیره اطلاعات: ${storage}<i class="sep"></i>ذخیره‌سازی ماندگار: ${S.persisted ? 'فعال (مرورگر اطلاعات را خودکار پاک نمی‌کند)' : 'غیرفعال (با کمبود فضای گوشی ممکن است پاک شود؛ پشتیبان بگیرید)'}</p></div>`;
+}
+
+function dataCard() {
+  const st = S.settings, months = monthsWithData();
+  if (!S.exportMonth || !months.some(m => m.key === S.exportMonth)) S.exportMonth = months[0]?.key;
+  return `<div class="card"><h3>داده‌ها و پشتیبان</h3>
+    <p class="hint">اطلاعات بازرسی‌ها داخل حافظه خود برنامه در مرورگر Chrome همین گوشی نگهداری می‌شود؛ فایل جداگانه‌ای در حافظه گوشی دیده نمی‌شود و به هیچ سروری هم ارسال نمی‌شود. تنها راه خارج کردن اطلاعات، «فایل پشتیبان» و «خروجی ماهانه» است.${st.lastBackup ? ` آخرین پشتیبان: ${faDigits(Jalali.fromDate(new Date(st.lastBackup)))}` : ''}</p>
+    <div class="actions"><button class="btn primary" data-act="backup">دریافت فایل پشتیبان</button><button class="btn" data-act="restore">بازیابی از پشتیبان</button><button class="btn" data-act="excel">خروجی اکسل</button></div>
+
+    <h4>خروجی ماهانه برای ارسال به مرکز</h4>
+    <p class="hint">فایل JSON شامل بازرسی‌های نهایی‌شده ماه انتخابی، برای ارسال از طریق اتوماسیون اداری.</p>
+    ${months.length ? `<label class="fld"><span>ماه</span><select data-act-change="exportMonth">${months.map(m => `<option value="${m.key}" ${m.key === S.exportMonth ? 'selected' : ''}>${monthLabel(m.key)} — ${faDigits(m.n)} بازرسی${st.exports?.[m.key] ? ` (ارسال‌شده ${faDigits(Jalali.fromDate(new Date(st.exports[m.key])))})` : ''}</option>`).join('')}</select></label>
+      <label class="chk"><input type="checkbox" data-toggle="expPhotos" ${S.expPhotos ? 'checked' : ''}> همراه با عکس‌ها (حجم فایل بسیار بیشتر می‌شود)</label>
+      <div class="actions"><button class="btn primary" data-act="exportMonthly">دریافت فایل ماهانه</button></div>`
+      : '<p class="hint">هنوز بازرسی نهایی‌شده‌ای وجود ندارد.</p>'}
+
+    <div class="danger-box"><h4>پاک کردن داده‌ها</h4>
+      <p class="hint">پیش از پاک کردن، فایل پشتیبان به‌طور خودکار دریافت می‌شود.</p>
+      <div class="actions"><button class="btn danger" data-act="clearInspections">پاک کردن بازرسی‌ها</button><button class="btn danger" data-act="factoryReset">بازنشانی کامل برنامه</button></div>
+    </div>
+  </div>`;
 }
 
 // ----- Admin -----
@@ -1576,6 +1811,12 @@ function setStep(i) {
   if (insp.status !== 'final') { insp.step = i; saveInsp(insp); }
   pushNav(); render(); window.scrollTo(0, 0);
 }
+async function loadImage(file, maxSide) {
+  try { return await compressImage(file, maxSide, 'image/png'); } catch (e) {
+    modal('تصویر قابل استفاده نیست', 'این فرمت تصویر در مرورگر پشتیبانی نمی‌شود (مثلاً HEIC). لطفاً تصویر را با فرمت PNG یا JPG انتخاب کنید.');
+    return null;
+  }
+}
 const move = (arr, i, d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; };
 
 const ACT = {
@@ -1606,10 +1847,29 @@ const ACT = {
   startFu: (el) => go('new', { typeId: S.pkg.types.find(t => t.kind === 'followup').id, prevId: el.dataset.id }),
   printDash: () => printDoc(renderDashPrint(), `گزارش-عملکرد-${Jalali.today().replace(/\//g, '-')}`),
   install: async () => { if (S.installPrompt) { S.installPrompt.prompt(); await S.installPrompt.userChoice; S.installPrompt = null; render(); } },
-  fillC: (el) => {
+  fillAll: (el) => {
     const insp = curInsp(), sec = insp.type.sections.find(s => s.id === el.dataset.sec);
-    sec.items.forEach(it => { const a = insp.answers[it.id] || (insp.answers[it.id] = {}); if (!a.s) a.s = 'C'; });
+    let n = 0;
+    sec.items.forEach(it => {
+      const a = insp.answers[it.id] || (insp.answers[it.id] = {});
+      if (a.s !== 'NC' && a.s !== el.dataset.v) { a.s = el.dataset.v; n++; }
+    });
     saveInsp(insp); render();
+    toast(`${faDigits(n)} مورد تغییر کرد`);
+  },
+  rcSign: async () => {
+    const sig = await signFullscreen('امضای شخص ابلاغ‌شونده');
+    if (!sig) return;
+    const insp = curInsp(), now = new Date();
+    const d = insp.delivery = insp.delivery || {};
+    d.signature = sig;
+    if (!d.date) d.date = Jalali.today();
+    if (!d.time) d.time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    saveInsp(insp); toast('امضای ابلاغ‌شونده ثبت شد'); render();
+  },
+  rcRemove: async () => {
+    if (!await confirmBox('حذف امضا', 'امضای شخص ابلاغ‌شونده حذف شود؟', 'حذف')) return;
+    const insp = curInsp(); insp.delivery.signature = null; saveInsp(insp); render();
   },
   addVictim: () => { const i = curInsp(); i.accident.victims.push({}); saveInsp(i); render(); },
   rmVictim: async (el) => { const i = curInsp(); if (await confirmBox('حذف مصدوم', 'این مصدوم حذف شود؟', 'حذف')) { i.accident.victims.splice(+el.dataset.i, 1); saveInsp(i); render(); } },
@@ -1618,7 +1878,9 @@ const ACT = {
   addPhoto: async () => {
     const insp = curInsp(), files = await pickFile('image/*', true);
     for (const f of files) {
-      const data = await compressImage(f), id = uid();
+      let data;
+      try { data = await compressImage(f); } catch (e) { modal('تصویر قابل استفاده نیست', `فرمت فایل «${esc(f.name)}» پشتیبانی نمی‌شود. از تصویر PNG یا JPG استفاده کنید.`); continue; }
+      const id = uid();
       await DB.put('photos', { id, inspectionId: insp.id, data });
       S.photoCache[id] = data; insp.photos.push({ id, caption: '' });
     }
@@ -1644,8 +1906,8 @@ const ACT = {
   },
   reopen: async () => {
     const insp = curInsp();
-    if (!await confirmBox('بازگشایی', `با بازگشایی، نسخه اصلاحی ${esc(insp.serial)}-R${faDigits(insp.rev + 1)} ایجاد می‌شود و گزارش‌های قبلی دیگر معتبر نیستند. ادامه می‌دهید؟`, 'بازگشایی')) return;
-    insp.rev++; insp.status = 'draft'; insp.step = stepsOf(insp).length - 1;
+    if (!await confirmBox('بازگشایی', `با بازگشایی، نسخه اصلاحی ${esc(insp.serial)}-R${faDigits(insp.rev + 1)} ایجاد می‌شود و گزارش‌های قبلی دیگر معتبر نیستند. امضای ابلاغ در محل نیز حذف می‌شود و باید برای نسخه اصلاحی دوباره گرفته شود. ادامه می‌دهید؟`, 'بازگشایی')) return;
+    insp.rev++; insp.status = 'draft'; insp.delivery = null; insp.step = stepsOf(insp).length - 1;
     S.params = { id: insp.id }; pushNav(true);
     await DB.put('inspections', insp); render();
   },
@@ -1678,18 +1940,20 @@ const ACT = {
   },
   wpInspect: () => go('new', { wpId: S.params.wp.id }),
 
-  sigSave: () => {
-    const d = S.sigPad.toDataURL();
-    if (!d) return modal('امضا', 'ابتدا داخل کادر امضا کنید.');
+  sigSign: async () => {
+    const d = await signFullscreen('امضای بازرس');
+    if (!d) return;
     S.settings.signature = d; saveSettings(); toast('امضا ذخیره شد'); render();
   },
-  sigClear: () => S.sigPad.clear(),
-  sigUpload: async () => { const [f] = await pickFile('image/*'); if (!f) return; S.settings.signature = await compressImage(f, 600, 'image/png'); saveSettings(); render(); },
+  sigUpload: async () => { const [f] = await pickFile('image/*'); if (!f) return; const d = await loadImage(f, 600); if (d) { S.settings.signature = d; saveSettings(); render(); } },
   sigRemove: () => { S.settings.signature = null; saveSettings(); render(); },
-  logoUpload: async () => { const [f] = await pickFile('image/*'); if (!f) return; S.settings.logo = await compressImage(f, 400, 'image/png'); saveSettings(); render(); },
+  logoUpload: async () => { const [f] = await pickFile('image/*'); if (!f) return; const d = await loadImage(f, 400); if (d) { S.settings.logo = d; saveSettings(); toast('لوگو ذخیره شد'); render(); } },
   logoRemove: () => { S.settings.logo = null; saveSettings(); render(); },
 
   backup: () => exportBackup(),
+  exportMonthly: () => exportMonthly(S.exportMonth, !!S.expPhotos),
+  clearInspections: () => clearData(false),
+  factoryReset: () => clearData(true),
   restore: () => importBackup(),
   excel: () => exportExcel(),
   importPkg: () => importPackage(),
@@ -1745,6 +2009,8 @@ const ACT = {
 function onInput(e) {
   const el = e.target;
   if (el.id === 'npw') { S._npw = el.value; return; }
+  if (el.hasAttribute('data-modal-input')) { S._mi = el.value; return; }
+  if (el.dataset.toggle) { S[el.dataset.toggle] = el.checked; return; }
   let v = el.value;
   if (el.hasAttribute('data-num')) v = enDigits(v);
   if (el.tagName === 'SELECT' && e.type === 'input') return; // selects are handled once, on change
@@ -1765,6 +2031,7 @@ function onInput(e) {
   else if (el.dataset.actInput === 'searchWp') { S.q = v; const pos = el.selectionStart; render(); const s = $('.search'); s.focus(); s.setSelectionRange(pos, pos); }
   else if (el.dataset.actChange === 'newWp') { S.params.wpId = v || null; }
   else if (el.dataset.actChange === 'dashPeriod') { S.dashPeriod = v; render(); }
+  else if (el.dataset.actChange === 'exportMonth') { S.exportMonth = v; }
 }
 
 document.addEventListener('click', e => {
