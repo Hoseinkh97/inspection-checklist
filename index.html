@@ -159,8 +159,12 @@ textarea { resize: vertical; }
 .p-sum div { text-align: center; padding: 2mm 1mm; border-left: .6pt solid #777; } .p-sum div:last-child { border-left: 0; }
 .p-sum b { display: block; font-size: 13pt; } .p-sum span { font-size: 8pt; }
 .p-para { text-align: justify; white-space: pre-wrap; margin: 1.5mm 0; }
-.p-sign { width: 62mm; margin: 6mm 0 0 auto; margin-right: auto; margin-left: 0; text-align: center; break-inside: avoid; }
-.p-sig-img { height: 22mm; display: flex; align-items: center; justify-content: center; } .p-sig-img img { max-height: 22mm; max-width: 55mm; }
+.p-sign { width:86mm;max-width:100%; margin:6mm 0 0 auto;margin-right:auto;margin-left:0;text-align:center;break-inside:avoid;page-break-inside:avoid;display:flex;flex-direction:column;align-items:center;gap:2mm; }
+.p-sign-name,.p-sign-title { display:block;width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.7; }
+.p-sign-name { font-weight:700; }
+.p-inspector-code { display:inline-block;font-size:.85em;font-weight:400; }
+.p-sig-img { min-height:22mm;width:100%;display:flex;align-items:center;justify-content:center; }
+.p-sig-img img { display:block;max-height:22mm;max-width:min(55mm,100%);object-fit:contain; }
 .muted { color: #555; font-size: 9pt; }
 .p-photos-page { break-before: page; }
 .p-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
@@ -826,12 +830,10 @@ function letterhead(meta) {
 }
 
 function signature(insp) {
-  const p = S.settings.profile;
-  return `<div class="p-sign">
-    <div>${esc(p.name)}</div><div class="muted">${esc(p.title)}${p.code ? ' — کد ' + fa(p.code) : ''}</div>
-    <div class="p-sig-img">${S.settings.signature ? `<img src="${S.settings.signature}" alt="">` : ''}</div>
-    <div class="muted">تاریخ: ${fa(insp.date)}</div>
-  </div>`;
+  return inspectorSignature(S.settings.profile,S.settings.signature,insp.date);
+}
+function inspectorSignature(profile,image,date='') {
+  return `<div class="p-sign"><div class="p-sign-name">${esc(profile.name)}${profile.code?` <span class="p-inspector-code">(کد بازرس: <bdi>${esc(faDigits(profile.code))}</bdi>)</span>`:''}</div><div class="p-sign-title">${esc(profile.title)}</div><div class="p-sig-img">${image?`<img src="${esc(image)}" alt="امضا">`:''}</div>${date?`<div class="muted">تاریخ: ${fa(date)}</div>`:''}</div>`;
 }
 
 function kv(rows) {
@@ -2312,7 +2314,7 @@ function officialBody(i,edit=false) {
     const isTitle=/^ردیف\s+\d+/.test(txt);
     const selected=!clause || !!i.form.selected[clause];
     if(!edit && !selected)return '';
-    if(!txt)return '';
+    if(!txt||/^(بازرس کار|سعید فرزین)$/.test(txt))return '';
     let checkNo=0;
     let p=officialUnitTokens(i,b.tokens).map(t=>typeof t==='string'?esc(t).replace(/\uf00d/g,()=>{const key='check_'+b.id+'_'+checkNo++;return edit?`<input type="checkbox" aria-label="انتخاب مدرک" data-document-check="${key}" ${i.form.values[key]==='yes'?'checked':''}>`:(i.form.values[key]==='yes'?'☑':'☐')}):officialField(i,t,edit)).join('');
     p=p.replace(/سعيد فرزين/g,esc(officialIdentity(i).profile.name));
@@ -2344,7 +2346,7 @@ function officialReceipt(i) {
 function officialIdentity(i){return i.form.useDeviceSettings?S.settings:i.form;}
 function officialPrint(i) {
   const identity=officialIdentity(i),p=identity.profile;
-  return `<article class="p-doc word-document">${officialHeading(i)}${officialBody(i)}<div class="p-sign">${esc(p.name)}<br>${esc(p.title)}${identity.signature?`<img style="max-width:160px;max-height:80px" src="${identity.signature}">`:''}</div>${(i.form.signers||[]).map(s=>`<div class="p-sign">${esc(s.role)}: ${esc(s.name)}<br><img style="max-width:160px;max-height:80px" src="${s.signature}"></div>`).join('')}${officialReceipt(i)}</article>`;
+  return `<article class="p-doc word-document">${officialHeading(i)}${officialBody(i)}${inspectorSignature(p,identity.signature)}${(i.form.signers||[]).map(s=>inspectorSignature({name:s.name,title:s.role},s.signature)).join('')}${officialReceipt(i)}</article>`;
 }
 function officialHeading(i){
   const logo=!i.form.useDeviceSettings&&i.status==='final'&&Object.hasOwn(i.form,'logo')?i.form.logo:S.settings.logo;
