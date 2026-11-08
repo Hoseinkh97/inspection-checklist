@@ -805,10 +805,10 @@ function validBackup(d) {
   const image=s=>!s||(typeof s==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s));
   const records=a=>Array.isArray(a)&&a.every(x=>obj(x)&&typeof x.id==='string'&&x.id.length>0)&&new Set(a.map(x=>x.id)).size===a.length;
   function blocks(bs,depth=0){return depth<12&&Array.isArray(bs)&&bs.every(b=>obj(b)&&(b.kind==='p'?typeof b.text==='string'&&Array.isArray(b.tokens)&&b.tokens.every(t=>typeof t==='string'||(obj(t)&&typeof t.key==='string'&&typeof t.label==='string')):b.kind==='table'&&Array.isArray(b.rows)&&b.rows.every(r=>Array.isArray(r.cells)&&r.cells.every(c=>blocks(c.blocks,depth+1)))));}
-  return obj(d.settings)&&obj(d.settings.profile)&&obj(d.settings.seq)&&obj(d.settings.letterhead)&&image(d.settings.signature)&&image(d.settings.logo)&&validPackage(d.package)&&records(d.workplaces)&&records(d.inspections)&&records(d.photos||[])&&(d.photos||[]).every(p=>image(p.data))&&d.inspections.every(i=>{
+  return (d.dataOnly===true||(obj(d.settings)&&obj(d.settings.profile)&&obj(d.settings.seq)&&obj(d.settings.letterhead)&&image(d.settings.signature)&&image(d.settings.logo)&&validPackage(d.package)))&&records(d.workplaces)&&records(d.inspections)&&records(d.photos||[])&&(d.photos||[]).every(p=>image(p.data))&&d.inspections.every(i=>{
     if(i.followupTask&&(!obj(i.followupTask)||typeof i.followupTask.enabled!=='boolean'||typeof i.followupTask.due!=='string'||(i.followupTask.enabled&&!Jalali.valid(i.followupTask.due))||(i.followupTask.note!=null&&typeof i.followupTask.note!=='string')))return false;
     if(!obj(i.type)||!Array.isArray(i.type.sections)||!obj(i.workplace)||!obj(i.answers)||!Array.isArray(i.photos)||typeof i.serial!=='string'||!['draft','final'].includes(i.status)||!image(i.delivery?.signature))return false;
-    if(i.form){const f=i.form;return obj(f.document)&&blocks(f.document.blocks)&&Array.isArray(f.document.fields)&&obj(f.values)&&Object.values(f.values).every(x=>typeof x==='string')&&obj(f.selected)&&obj(f.profile)&&image(f.logo)&&image(f.signature)&&Array.isArray(f.signers)&&f.signers.every(s=>obj(s)&&image(s.signature));}
+    if(i.form){const f=i.form;return obj(f.document)&&blocks(f.document.blocks)&&Array.isArray(f.document.fields)&&obj(f.values)&&Object.values(f.values).every(x=>typeof x==='string')&&obj(f.selected)&&(obj(f.profile)||d.dataOnly===true||f.useDeviceSettings===true)&&image(f.logo)&&image(f.signature)&&Array.isArray(f.signers)&&f.signers.every(s=>obj(s)&&image(s.signature));}
     return i.type.sections.every(s=>obj(s)&&Array.isArray(s.items))&&(!i.accident||(Array.isArray(i.accident.victims)&&Array.isArray(i.accident.witnesses)));
   });
 }
@@ -990,13 +990,16 @@ async function importBackup() {
   try { data = JSON.parse(await readFileAsText(f)); } catch { return modal('خطا', 'فایل قابل خواندن نیست.'); }
   if (data.kind !== 'inspection-checklist-backup') return modal('خطا', 'این فایل، پشتیبان این برنامه نیست.');
   if (!validBackup(data)) return modal('خطا', 'ساختار پشتیبان ناقص یا نامعتبر است؛ هیچ اطلاعاتی وارد نشد.');
+  if(data.dataOnly)for(const i of data.inspections)if(i.form)i.form.useDeviceSettings=true;
   if (typeof officialWrites !== 'undefined') await Promise.all(officialWrites.values());
   const ok = await confirmBox('بازیابی پشتیبان', `${faDigits(data.inspections.length)} بازرسی و ${faDigits(data.workplaces.length)} کارگاه به اطلاعات فعلی افزوده یا جایگزین می‌شود (بازرسی‌های هم‌شناسه بازنویسی می‌شوند). ادامه می‌دهید؟`, 'بازیابی');
   if (!ok) return;
   const entries=[...data.workplaces.map(x=>['workplaces',x]),...data.inspections.map(x=>['inspections',x]),...(data.photos||[]).map(x=>['photos',x])];
   const oldSettings=clone(S.settings);
   // Profile, letterhead and checklists are restored only onto an unconfigured device.
-  if (!S.settings.profile.code) {
+  if (data.dataOnly) {
+    // Data-only imports never replace the device profile, logo, signature or package.
+  } else if (!S.settings.profile.code) {
     S.settings = Object.assign(DEFAULT_SETTINGS(), data.settings);
     if (data.package) entries.push(['kv', { ...data.package, id: 'package' }]);
   } else {
@@ -2299,7 +2302,7 @@ function officialBody(i,edit=false) {
     if(!txt)return '';
     let checkNo=0;
     let p=b.tokens.map(t=>typeof t==='string'?esc(t).replace(/\uf00d/g,()=>{const key='check_'+b.id+'_'+checkNo++;return edit?`<input type="checkbox" aria-label="انتخاب مدرک" data-document-check="${key}" ${i.form.values[key]==='yes'?'checked':''}>`:(i.form.values[key]==='yes'?'☑':'☐')}):officialField(i,t,edit)).join('');
-    p=p.replace(/سعيد فرزين/g,esc(i.form.profile.name));
+    p=p.replace(/سعيد فرزين/g,esc(officialIdentity(i).profile.name));
     if(isTitle && edit)p=`<label class="word-choice"><input type="checkbox" data-clause="${b.id}" ${selected?'checked':''}>${p}</label>`;
     let result='';
     if(!resultPlaced && /^(نتیجه بازرسی\s*:|شرح وقوع و علت حادثه\s*:)/.test(txt)){
@@ -2325,12 +2328,13 @@ function officialReceipt(i) {
   const d=i.delivery;if(!d?.signature)return '';
   return `<section class="word-receipt"><h2>رسید ابلاغ در محل</h2><p>فرم ${esc(i.type.name)} به شماره ${esc(serialOf(i))} در تاریخ ${esc(d.date)} ساعت ${esc(d.time)} به ${esc(d.name)} (${esc(d.role)}) ارائه و دریافت آن با امضای زیر ثبت شد.</p><img src="${d.signature}" alt="امضای گیرنده"></section>`;
 }
+function officialIdentity(i){return i.form.useDeviceSettings?S.settings:i.form;}
 function officialPrint(i) {
-  const p=i.form.profile;
-  return `<article class="p-doc word-document">${officialHeading(i)}${officialBody(i)}<div class="p-sign">${esc(p.name)}<br>${esc(p.title)}${i.form.signature?`<img style="max-width:160px;max-height:80px" src="${i.form.signature}">`:''}</div>${(i.form.signers||[]).map(s=>`<div class="p-sign">${esc(s.role)}: ${esc(s.name)}<br><img style="max-width:160px;max-height:80px" src="${s.signature}"></div>`).join('')}${officialReceipt(i)}</article>`;
+  const identity=officialIdentity(i),p=identity.profile;
+  return `<article class="p-doc word-document">${officialHeading(i)}${officialBody(i)}<div class="p-sign">${esc(p.name)}<br>${esc(p.title)}${identity.signature?`<img style="max-width:160px;max-height:80px" src="${identity.signature}">`:''}</div>${(i.form.signers||[]).map(s=>`<div class="p-sign">${esc(s.role)}: ${esc(s.name)}<br><img style="max-width:160px;max-height:80px" src="${s.signature}"></div>`).join('')}${officialReceipt(i)}</article>`;
 }
 function officialHeading(i){
-  const logo=i.status==='final'&&Object.hasOwn(i.form,'logo')?i.form.logo:S.settings.logo;
+  const logo=!i.form.useDeviceSettings&&i.status==='final'&&Object.hasOwn(i.form,'logo')?i.form.logo:S.settings.logo;
   const subjects={'ساختمانی':'گزارش بازرسی کارگاه ساختمانی','فرم حادثه':'گزارش بررسی حادثه','گزارش بیمارستان':'گزارش بازرسی بیمارستان'};
   const subject=subjects[i.type.name]||i.type.name.replace(/^فرم /,'');
   return formHeading(i.date,serialOf(i),logo)+`<div class="form-subject">موضوع: ${esc(subject)}</div>`;
@@ -2376,7 +2380,7 @@ ACT.officialPreview=async()=>{const i=curInsp();await officialSave(i);S.params.p
 ACT.officialEdit=()=>{S.params.preview=false;render()};
 async function officialFinish(i,delivery){
   const errors=officialProblems(i);if(errors.length){await modal('تکمیل فرم',errors.map(esc).join('<br>'));return false;}
-  const candidate=clone(i);candidate.form.logo=S.settings.logo;candidate.delivery=delivery;candidate.status='final';candidate.finalizedAt=new Date().toISOString();
+  const candidate=clone(i);if(candidate.form.useDeviceSettings){candidate.form.profile=clone(S.settings.profile);candidate.form.signature=S.settings.signature;delete candidate.form.useDeviceSettings;}candidate.form.logo=S.settings.logo;candidate.delivery=delivery;candidate.status='final';candidate.finalizedAt=new Date().toISOString();
   try{await (officialWrites.get(i.id)||Promise.resolve()).catch(()=>{});const w={...i.workplace,id:i.workplace.wpId};await DB.batch([['inspections',candidate],['workplaces',w]]);Object.assign(i,candidate);const ix=S.workplaces.findIndex(x=>x.id===w.id);if(ix<0)S.workplaces.push(w);else S.workplaces[ix]=w;S.params.preview=true;render();return true;}catch(e){await modal('ذخیره انجام نشد','فرم نهایی نشد. دوباره تلاش کنید.');return false;}
 }
 ACT.officialFinalize=async()=>{const i=curInsp();if(officialBusy.has(i.id))return;officialBusy.add(i.id);try{if(await confirmBox('ثبت نهایی','فرم نمایش‌داده‌شده بدون رسید ابلاغ ثبت شود؟','ثبت نهایی'))await officialFinish(i,null)}finally{officialBusy.delete(i.id)}};
@@ -2405,6 +2409,7 @@ document.addEventListener('input',e=>{
   if(el.dataset.officialMeta){officialInvalidate(i);if(el.dataset.officialMeta==='date'){i.date=enDigits(el.value);i.form.values.date=i.date;}else {i.workplace.name=el.value;i.form.values.name=el.value;}officialSave(i);}
 });
 document.addEventListener('change',e=>{const el=e.target,i=curInsp();if(!i?.form||i.status==='final')return;if(el.dataset.clause){officialInvalidate(i);i.form.selected[el.dataset.clause]=el.checked;officialSave(i);}if(el.dataset.documentCheck){officialInvalidate(i);i.form.values[el.dataset.documentCheck]=el.checked?'yes':'';officialSave(i);}});
+
 
 
 ;
