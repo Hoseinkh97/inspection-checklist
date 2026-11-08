@@ -32,6 +32,7 @@ nav { display: flex; gap: .25rem; }
 .nav-b { background: transparent; border: 0; color: inherit; opacity: .8; padding: .35rem .7rem; border-radius: 8px; cursor: pointer; }
 .nav-b.on { background: rgba(255,255,255,.18); opacity: 1; font-weight: 700; }
 .wrap { max-width: 920px; margin: 0 auto; padding: 12px 16px 80px; }
+.app-credit { max-width:920px;margin:0 auto;padding:16px 20px calc(20px + env(safe-area-inset-bottom));text-align:center;font-size:.8rem;line-height:1.9;color:var(--muted);border-top:1px solid var(--line); }
 
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 10px 0; display: block; width: 100%; text-align: inherit; }
 .row-between { display: flex; justify-content: space-between; align-items: center; gap: .5rem; flex-wrap: wrap; }
@@ -131,7 +132,7 @@ textarea { resize: vertical; }
 #print { display: none; }
 
 /* ---------- Print ---------- */
-@page { size: A4; margin: 12mm 12mm 14mm; @bottom-center { content: "صفحه " counter(page) " از " counter(pages); font-family: Vazirmatn, Tahoma; font-size: 8pt; color: #666; } }
+@page { size: A4 portrait; margin: 20mm; @bottom-center { content: "صفحه " counter(page) " از " counter(pages); font-family: Vazirmatn, Tahoma; font-size: 8pt; color: #666; } }
 @media print {
   body { background: #fff; font-size: 10pt; line-height: 1.6; }
   #app, .toast, .modal-bg { display: none !important; }
@@ -265,6 +266,86 @@ textarea.concl { width: 100%; min-height: max(320px, calc(100vh - 360px)); paddi
 .sign-fs-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 10px; }
 .sign-fs-btns .btn { min-height: 54px; font-size: 1rem; font-weight: 700; }
 body.no-scroll { overflow: hidden; }
+.official-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px; }
+.official-cards button { min-height:64px;text-align:right;cursor:pointer;font:inherit;color:var(--pri); }
+.official-bar { position:sticky;bottom:0;display:flex;flex-wrap:wrap;gap:8px;background:var(--bg);padding:12px 0;z-index:6; }
+.official-bar button { min-height:48px;flex:1; }
+.word-document { line-height:2.3;overflow-wrap:anywhere; }
+.word-paragraph { margin:8px 0;white-space:pre-wrap; }
+.word-input { display:inline-block;width:180px;max-width:100%;min-height:44px;border:0;border-bottom:2px solid #4689b6;background:#eff8ff;border-radius:4px;padding:5px;margin:3px;font:inherit; }
+.word-input:focus { outline:2px solid #0b4f8a; }
+.word-value { display:inline-block;min-width:50px;margin:0 5px;font-weight:bold;white-space:pre-wrap; }
+.word-table { width:100%;border-collapse:collapse;table-layout:fixed; }
+.word-table td { border:1px solid #aaa;padding:8px;vertical-align:top; }
+.word-table .word-input { width:100%; }
+.word-result { width:100%;min-height:180px;font:inherit;line-height:2;border:1px solid var(--line);border-radius:8px;padding:10px; }
+.word-prose { white-space:pre-wrap;min-height:60px; }
+.word-choice { display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-weight:bold; }
+.word-choice input { width:24px;height:24px;flex:none;margin-top:9px; }
+.word-muted { color:#65727b; }
+.word-receipt { border:1px dashed #555;margin-top:24px;padding:12px;break-inside:avoid; }
+.word-receipt img { max-width:180px;max-height:100px; }
+.word-meta { font-size:12px;border-bottom:1px solid #777;margin-bottom:12px; }
+.form-heading { break-inside:avoid; margin-bottom:12px; border-bottom:1px solid #999; padding-bottom:16px;line-height:1.4; }
+.form-invocation { text-align:center; font-weight:700; line-height:1.3;margin-bottom:4px; }
+.form-heading-row { display:flex;direction:rtl;justify-content:space-between;align-items:flex-start;gap:12px;min-height:0; }
+.form-heading-logo { flex:0 0 160px;text-align:right; }
+.form-heading-logo img { display:block;width:160px;height:auto;max-height:160px;object-fit:contain;object-position:right top; }
+.form-heading-meta { min-width:0; text-align:right;font-size:.85em;overflow-wrap:anywhere; }
+.form-heading-meta div + div { margin-top:4px; }
+.form-subject { margin:20px 0 0;font-weight:700;line-height:1.5; }
+.date-control { display:inline-flex;align-items:center;gap:4px;max-width:100%; }
+.date-control input { min-width:0;width:150px;cursor:pointer;direction:ltr; }
+.date-control button { border:1px solid var(--line);background:white;border-radius:6px;min-height:44px;min-width:44px;cursor:pointer; }
+.date-control.word-input { padding:0;border:0; }
+.temporal-combined { display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%; }
+.temporal-combined input[type=time] { min-height:44px;max-width:140px; }
+.calendar-dialog { width:min(360px,94vw);border:0;border-radius:14px;padding:18px;font:inherit;color:var(--ink); }
+.calendar-dialog::backdrop { background:#0007; }
+.calendar-dialog h3 { margin:0 0 12px; }
+.calendar-nav { display:flex;gap:6px;align-items:center;margin-bottom:14px; }
+.calendar-nav select { min-width:0;width:auto;flex:1; }
+.calendar-dialog button { font:inherit;min-height:40px;cursor:pointer;border:1px solid var(--line);border-radius:6px;background:#fff; }
+.calendar-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:4px;direction:rtl;margin-bottom:16px;text-align:center; }
+.calendar-grid button[aria-current] { background:var(--pri);color:white; }
+.calendar-dialog .actions { justify-content:space-between; }
+.inspector-filters { display:flex;flex-wrap:wrap;gap:12px;align-items:end; }
+.inspector-filters .fld { flex:1;min-width:150px; }
+.inspector-action-row { display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line); }
+.inspector-action-row small { color:var(--muted); }
+.inspector-action-row .actions { flex-wrap:wrap;justify-content:flex-end; }
+.inspector-task { margin-top:16px; }
+@media(max-width:600px){.inspector-action-row{align-items:flex-start;flex-direction:column}.inspector-action-row .actions{justify-content:flex-start}.inspector-filters>.btn{width:100%}}
+@media screen and (max-width:600px){
+  body { font-size:16px; }
+  .top-in { padding:6px 10px;gap:4px; }
+  .brand { width:100%;font-size:.95rem; }
+  nav { width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px; }
+  .nav-b { min-height:44px;padding:6px 2px;font-size:.85rem; }
+  .wrap { padding:10px 10px 30px; }
+  .card { padding:12px; }
+  .btn,.btn.sm,select,input:not([type=checkbox]):not([type=hidden]),summary { min-height:44px; }
+  input,select,textarea { font-size:16px; }
+  .grid,.grid2 { grid-template-columns:minmax(0,1fr); }
+  .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .tile { min-width:0; }
+  .official-cards { grid-template-columns:minmax(0,1fr); }
+  .date-control,.date-control input { max-width:100%; }
+  .date-control input { flex:1; }
+  .word-input { margin:4px 0; }
+  .official-bar { bottom:0;padding:8px 0 calc(8px + env(safe-area-inset-bottom)); }
+  .official-bar .btn { flex:1 1 140px; }
+  .modal-bg { padding:10px; }
+  .modal { width:100%;max-height:90dvh; }
+  .modal-btns { flex-wrap:wrap; }
+  .modal-btns .btn { flex:1; }
+  .calendar-dialog { max-height:90dvh;overflow-y:auto; }
+  .form-heading-logo { flex-basis:160px;max-width:50%; }
+  .form-heading-logo img { max-width:100%; }
+  .toast { max-width:calc(100vw - 24px);bottom:calc(90px + env(safe-area-inset-bottom));text-align:center; }
+}
+@media(max-width:600px){.word-table,.word-table tbody,.word-table tr,.word-table td{display:block;width:100%}.word-table td:empty{display:none}.word-preview{padding:10px}.official-bar .btn{font-size:.85rem}.word-input{width:100%}}
+@media print{.word-table{display:table}.word-table tbody{display:table-row-group}.word-table tr{display:table-row}.word-table td{display:table-cell}.word-document{line-height:1.8}.word-paragraph{orphans:3;widows:3}.word-table td{width:auto}.word-receipt{break-before:auto}}
 </style>
 </head>
 <body>
@@ -322,6 +403,15 @@ const DB = (() => {
   }
   return {
     init,
+    async batch(entries) {
+      if (fallback) {
+        const old = await Promise.all(entries.map(async ([s,v])=>[s,v.id,await fallback.get(s,v.id)]));
+        try {for (const [s,v] of entries) await fallback.put(s,v);} catch(e) {for(const [s,id,v] of old){if(v)await fallback.put(s,v);else await fallback.del(s,id);}throw e;}
+        return;
+      }
+      const db=await openIdb();
+      return new Promise((resolve,reject)=>{const t=db.transaction([...new Set(entries.map(x=>x[0]))],'readwrite');t.oncomplete=()=>resolve();t.onabort=()=>reject(t.error||new Error('ذخیره لغو شد'));t.onerror=()=>reject(t.error);for(const [s,v] of entries)t.objectStore(s).put(v);});
+    },
     get backend() { return backend; },
     get: (s, id) => fallback ? fallback.get(s, id) : tx(s, 'readonly', st => st.get(id)),
     all: (s) => fallback ? fallback.all(s) : tx(s, 'readonly', st => st.getAll()),
@@ -383,6 +473,7 @@ const Jalali = (() => {
     if (!m) return null;
     const p = [+m[1], +m[2], +m[3]];
     if (p[1] < 1 || p[1] > 12 || p[2] < 1 || p[2] > 31) return null;
+    if (fmt(g2j(...j2g(...p))) !== fmt(p)) return null;
     return p;
   }
   return {
@@ -390,6 +481,7 @@ const Jalali = (() => {
     fromDate(d) { return fmt(g2j(d.getFullYear(), d.getMonth() + 1, d.getDate())); },
     year() { const d = new Date(); return g2j(d.getFullYear(), d.getMonth() + 1, d.getDate())[0]; },
     valid: (s) => !!parse(s),
+    lastDay(y, m) { for (let d = 31; d >= 28; d--) if (parse(`${y}/${m}/${d}`)) return d; },
     norm: (s) => { const p = parse(s); return p ? fmt(p) : ''; },
     addDays(s, n) {
       const p = parse(s); if (!p) return '';
@@ -537,6 +629,47 @@ function attachSignaturePad(canvas, lineWidth = 2.4) {
 }
 
 ;
+// Local Jalali calendar; no network or third-party dependency.
+function formHeading(date,number,logo) {
+  return `<header class="form-heading"><div class="form-invocation">بسمه تعالی</div><div class="form-heading-row"><div class="form-heading-logo">${logo?`<img src="${esc(logo)}" alt="لوگو">`:''}</div><div class="form-heading-meta"><div>تاریخ: <span dir="ltr">${esc(faDigits(date))}</span></div><div>شماره: <span dir="ltr">${esc(faDigits(number))}</span></div></div></div></header>`;
+}
+function temporalKind(label, key='') {
+  const s=label.replace(/ي/g,'ی').replace(/ك/g,'ک').trim();
+  if(/تاریخ.*ساعت|تاریخ وساعت/.test(s))return 'datetime';
+  if(key==='date'||/(مورخ|در تاریخ)\s*:?$|تاریخ[^:]{0,35}:?\s*$/.test(s))return 'date';
+  if(/ساعت/.test(s)&&s.length<65)return 'time';
+  return '';
+}
+function temporalControl(attrs,value,kind,cls='') {
+  const v=enDigits(value||''), m=v.match(/^(\d{4}\/\d{1,2}\/\d{1,2})(?:\s+(\d{2}:\d{2}))?$/);
+  if(kind==='time')return `<input type="time" step="60" class="${cls}" ${attrs} value="${esc(v)}">`;
+  if(kind==='datetime')return `<span class="temporal-combined"><input type="hidden" data-temporal-value ${attrs} value="${esc(v)}"><span class="date-control"><input readonly aria-label="تاریخ" data-temporal-part="date" value="${esc(m?.[1]||'')}"><button type="button" data-pick-date aria-label="انتخاب تاریخ">📅</button></span><input type="time" step="60" aria-label="ساعت" data-temporal-part="time" value="${esc(m?.[2]||'')}"></span>`;
+  return `<span class="date-control ${cls}"><input readonly ${attrs} value="${esc(v)}"><button type="button" data-pick-date aria-label="انتخاب تاریخ">📅</button></span>`;
+}
+function temporalCommit(input,value) {
+  input.value=value;
+  const group=input.closest('.temporal-combined');
+  if(group){const date=group.querySelector('[data-temporal-part=date]').value,time=group.querySelector('[data-temporal-part=time]').value,canonical=group.querySelector('[data-temporal-value]');canonical.value=[date,time].filter(Boolean).join(' ');canonical.dispatchEvent(new Event('input',{bubbles:true}));}
+  else input.dispatchEvent(new Event('input',{bubbles:true}));
+}
+function openJalaliPicker(input) {
+  const selected=Jalali.norm(input.value), start=(selected||Jalali.today()).split('/').map(Number);let y=start[0],m=start[1];
+  const d=document.createElement('dialog');d.className='calendar-dialog';d.setAttribute('aria-label','انتخاب تاریخ شمسی');
+  const months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  const close=()=>{d.close();d.remove();input.focus();};
+  const choose=value=>{temporalCommit(input,value);close();};
+  function draw(){const first=Jalali.j2g(y,m,1),offset=(new Date(first[0],first[1]-1,first[2]).getDay()+1)%7,days=Jalali.lastDay(y,m);
+    d.innerHTML=`<h3>انتخاب تاریخ شمسی</h3><div class="calendar-nav"><button type="button" data-month="-1" aria-label="ماه قبل">→</button><select aria-label="ماه">${months.map((name,k)=>`<option value="${k+1}" ${k+1===m?'selected':''}>${name}</option>`).join('')}</select><select aria-label="سال">${Array.from({length:Math.max(151,y-1290+11)},(_,k)=>1290+k).map(n=>`<option ${n===y?'selected':''}>${n}</option>`).join('')}</select><button type="button" data-month="1" aria-label="ماه بعد">←</button></div><div class="calendar-grid">${['ش','ی','د','س','چ','پ','ج'].map(x=>`<b>${x}</b>`).join('')}${'<span></span>'.repeat(offset)}${Array.from({length:days},(_,k)=>{const date=`${y}/${String(m).padStart(2,'0')}/${String(k+1).padStart(2,'0')}`;return `<button type="button" data-day="${date}" ${date===selected?'aria-current="date"':''}>${faDigits(k+1)}</button>`}).join('')}</div><div class="actions"><button type="button" data-today>امروز</button><button type="button" data-clear>پاک کردن</button><button type="button" data-cancel>انصراف</button></div>`;
+  }
+  d.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.day)return choose(b.dataset.day);if(b.hasAttribute('data-today'))return choose(Jalali.today());if(b.hasAttribute('data-clear'))return choose('');if(b.hasAttribute('data-cancel'))return close();if(b.dataset.month){m+=+b.dataset.month;if(m<1){m=12;y--;}if(m>12){m=1;y++;}draw();}});
+  d.addEventListener('change',e=>{if(e.target.getAttribute('aria-label')==='ماه')m=+e.target.value;else y=+e.target.value;draw();});
+  d.addEventListener('cancel',e=>{e.preventDefault();close();});draw();document.body.appendChild(d);d.showModal();
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pick-date]');if(b&&!b.matches(':disabled'))openJalaliPicker(b.parentElement.querySelector('input'));else if(e.target.matches('.date-control input[readonly]')&&!e.target.matches(':disabled'))openJalaliPicker(e.target);});
+document.addEventListener('input',e=>{if(e.target.matches('[data-temporal-part=time]'))temporalCommit(e.target,e.target.value);});
+
+
+;
 // Default checklist package. Admin can edit everything in-app and export a new package.
 // Article references are starting points and must be reviewed by the office before official use.
 const DEFAULT_PACKAGE = (() => {
@@ -660,6 +793,27 @@ const DEFAULT_PACKAGE = (() => {
 })();
 
 ;
+function validPackage(p) {
+  const str=x=>typeof x==='string';const ids=new Set();
+  return !!p && Array.isArray(p.types) && ['noticeIntro','noticeImminent','noticeOutro'].every(k=>str(p[k])) && p.types.every(t=>{
+    if(!t||!str(t.id)||!t.id||ids.has(t.id)||!str(t.name)||!['routine','accident','followup'].includes(t.kind)||!Array.isArray(t.sections))return false;ids.add(t.id);const items=new Set(),secs=new Set();
+    return t.sections.every(s=>{if(!s||!str(s.id)||secs.has(s.id)||!str(s.title)||!Array.isArray(s.items))return false;secs.add(s.id);return s.items.every(i=>{if(!i||!str(i.id)||!i.id||items.has(i.id)||!str(i.text))return false;items.add(i.id);return true})});
+  });
+}
+function validBackup(d) {
+  const obj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+  const image=s=>!s||(typeof s==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s));
+  const records=a=>Array.isArray(a)&&a.every(x=>obj(x)&&typeof x.id==='string'&&x.id.length>0)&&new Set(a.map(x=>x.id)).size===a.length;
+  function blocks(bs,depth=0){return depth<12&&Array.isArray(bs)&&bs.every(b=>obj(b)&&(b.kind==='p'?typeof b.text==='string'&&Array.isArray(b.tokens)&&b.tokens.every(t=>typeof t==='string'||(obj(t)&&typeof t.key==='string'&&typeof t.label==='string')):b.kind==='table'&&Array.isArray(b.rows)&&b.rows.every(r=>Array.isArray(r.cells)&&r.cells.every(c=>blocks(c.blocks,depth+1)))));}
+  return obj(d.settings)&&obj(d.settings.profile)&&obj(d.settings.seq)&&obj(d.settings.letterhead)&&image(d.settings.signature)&&image(d.settings.logo)&&validPackage(d.package)&&records(d.workplaces)&&records(d.inspections)&&records(d.photos||[])&&(d.photos||[]).every(p=>image(p.data))&&d.inspections.every(i=>{
+    if(i.followupTask&&(!obj(i.followupTask)||typeof i.followupTask.enabled!=='boolean'||typeof i.followupTask.due!=='string'||(i.followupTask.enabled&&!Jalali.valid(i.followupTask.due))||(i.followupTask.note!=null&&typeof i.followupTask.note!=='string')))return false;
+    if(!obj(i.type)||!Array.isArray(i.type.sections)||!obj(i.workplace)||!obj(i.answers)||!Array.isArray(i.photos)||typeof i.serial!=='string'||!['draft','final'].includes(i.status)||!image(i.delivery?.signature))return false;
+    if(i.form){const f=i.form;return obj(f.document)&&blocks(f.document.blocks)&&Array.isArray(f.document.fields)&&obj(f.values)&&Object.values(f.values).every(x=>typeof x==='string')&&obj(f.selected)&&obj(f.profile)&&image(f.logo)&&image(f.signature)&&Array.isArray(f.signers)&&f.signers.every(s=>obj(s)&&image(s.signature));}
+    return i.type.sections.every(s=>obj(s)&&Array.isArray(s.items))&&(!i.accident||(Array.isArray(i.accident.victims)&&Array.isArray(i.accident.witnesses)));
+  });
+}
+
+;
 // ---------- Print layouts (browser Print → Save as PDF) ----------
 const STATE_LABEL = { C: 'منطبق', NC: 'نامنطبق', NA: 'غیرمرتبط' };
 const FU_STATE_LABEL = { C: 'رفع شده', NC: 'رفع نشده', NA: 'موضوعیت ندارد' };
@@ -668,16 +822,7 @@ const dash = (s) => (s === '' || s == null ? '—' : fa(s));
 
 // meta: { no, date, attach }
 function letterhead(meta) {
-  const st = S.settings, lh = st.letterhead;
-  return `<div class="p-head">
-    <div class="p-logo">${st.logo ? `<img src="${st.logo}" alt="">` : ''}</div>
-    <div class="p-org">${[lh.line1, lh.line2, lh.line3].filter(Boolean).map((l, i) => `<div class="l${i + 1}">${esc(l)}</div>`).join('')}</div>
-    <div class="p-meta">
-      <div>شماره: ${meta.no === '—' ? '—' : ltr(meta.no)}</div>
-      <div>تاریخ: ${fa(meta.date)}</div>
-      <div>پیوست: ${meta.attach}</div>
-    </div>
-  </div>`;
+  return formHeading(meta.date,meta.no,S.settings.logo);
 }
 
 function signature(insp) {
@@ -826,6 +971,7 @@ const fileDate = () => Jalali.today().replace(/\//g, '-');
 
 async function exportBackup() {
   flushAll();
+  if (typeof officialWrites !== 'undefined') await Promise.all(officialWrites.values());
   const data = {
     kind: 'inspection-checklist-backup', app: APP_VERSION, exportedAt: new Date().toISOString(),
     settings: S.settings, package: S.pkg, workplaces: S.workplaces, inspections: S.inspections,
@@ -834,7 +980,7 @@ async function exportBackup() {
   downloadBlob(new Blob([JSON.stringify(data)], { type: 'application/json' }), `backup-${S.settings.profile.code || 'inspector'}-${fileDate()}.json`);
   S.settings.lastBackup = new Date().toISOString(); saveSettings();
   toast('فایل پشتیبان دریافت شد');
-  if (S.view === 'home' || S.view === 'settings') render();
+  if (S.view === 'home' || S.view === 'settings' || S.view === 'dash') render();
 }
 
 async function importBackup() {
@@ -843,19 +989,21 @@ async function importBackup() {
   let data;
   try { data = JSON.parse(await readFileAsText(f)); } catch { return modal('خطا', 'فایل قابل خواندن نیست.'); }
   if (data.kind !== 'inspection-checklist-backup') return modal('خطا', 'این فایل، پشتیبان این برنامه نیست.');
+  if (!validBackup(data)) return modal('خطا', 'ساختار پشتیبان ناقص یا نامعتبر است؛ هیچ اطلاعاتی وارد نشد.');
+  if (typeof officialWrites !== 'undefined') await Promise.all(officialWrites.values());
   const ok = await confirmBox('بازیابی پشتیبان', `${faDigits(data.inspections.length)} بازرسی و ${faDigits(data.workplaces.length)} کارگاه به اطلاعات فعلی افزوده یا جایگزین می‌شود (بازرسی‌های هم‌شناسه بازنویسی می‌شوند). ادامه می‌دهید؟`, 'بازیابی');
   if (!ok) return;
-  for (const x of data.workplaces) await DB.put('workplaces', x);
-  for (const x of data.inspections) await DB.put('inspections', x);
-  for (const x of data.photos || []) await DB.put('photos', x);
+  const entries=[...data.workplaces.map(x=>['workplaces',x]),...data.inspections.map(x=>['inspections',x]),...(data.photos||[]).map(x=>['photos',x])];
+  const oldSettings=clone(S.settings);
   // Profile, letterhead and checklists are restored only onto an unconfigured device.
   if (!S.settings.profile.code) {
     S.settings = Object.assign(DEFAULT_SETTINGS(), data.settings);
-    if (data.package) await DB.put('kv', { ...data.package, id: 'package' });
+    if (data.package) entries.push(['kv', { ...data.package, id: 'package' }]);
   } else {
     for (const [y, n] of Object.entries(data.settings?.seq || {})) S.settings.seq[y] = Math.max(S.settings.seq[y] || 0, n);
   }
-  await DB.put('kv', S.settings);
+  entries.push(['kv',S.settings]);
+  try {await DB.batch(entries);} catch(e){S.settings=oldSettings;return modal('بازیابی انجام نشد','امکان ذخیره اطلاعات وجود ندارد؛ فضای دستگاه را بررسی کنید.');}
   await loadAll();
   toast('بازیابی انجام شد'); go('home');
 }
@@ -905,6 +1053,7 @@ async function importPackage() {
   let pkg;
   try { pkg = JSON.parse(await readFileAsText(f)); } catch { return modal('خطا', 'فایل قابل خواندن نیست.'); }
   if (pkg.kind !== 'inspection-checklist-package' || !Array.isArray(pkg.types)) return modal('خطا', 'این فایل، بسته چک‌لیست این برنامه نیست.');
+  if (!validPackage(pkg)) return modal('خطا', 'ساختار بسته نامعتبر است؛ تغییری انجام نشد.');
   const ok = await confirmBox('ورود بسته چک‌لیست', `بسته نسخه ${esc(faDigits(pkg.version))} با ${faDigits(pkg.types.length)} نوع بازرسی جایگزین چک‌لیست فعلی می‌شود. بازرسی‌های ثبت‌شده تغییری نمی‌کنند. ادامه می‌دهید؟`, 'ورود');
   if (!ok) return;
   S.pkg = pkg; S.admin = false;
@@ -964,7 +1113,7 @@ async function exportMonthly(key, withPhotos) {
     format: 'inspection-monthly-export', schemaVersion: EXPORT_SCHEMA, appVersion: APP_VERSION,
     exportedAt: new Date().toISOString(),
     inspector: { code: p.code, name: p.name, title: p.title },
-    period: { year: +y, month: +m, from: `${key}/01`, to: `${key}/31` },
+    period: { year: +y, month: +m, from: `${key}/01`, to: `${key}/${Jalali.lastDay(+y,+m)}` },
     checklistVersion: S.pkg.version,
     counts: { inspections: list.length, deficiencies: list.reduce((a, i) => a + stats(i).nc, 0) },
     inspections: list.map(i => exportRecord(i, photos))
@@ -1007,7 +1156,7 @@ function periodStart(p) {
 
 function dashData(period) {
   const from = periodStart(period), today = Jalali.today();
-  const inPeriod = (i) => Jalali.norm(i.date) >= from;
+  const inPeriod = (i) => Jalali.norm(i.date) >= from && Jalali.norm(i.date) <= today;
   const fin = S.inspections.filter(i => i.status === 'final' && inPeriod(i));
   const drafts = S.inspections.filter(i => i.status === 'draft');
   const sts = fin.map(i => [i, stats(i)]);
@@ -1134,7 +1283,7 @@ function renderDashPrint() {
 
 ;
 // ---------- Constants ----------
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '2.0.0';
 const RISKS = [['L', 'کم'], ['M', 'متوسط'], ['H', 'زیاد'], ['X', 'خطر قریب‌الوقوع']];
 const RISK_LABEL = Object.fromEntries(RISKS);
 const KIND_LABEL = { routine: 'موردی', accident: 'حادثه', followup: 'پیگیری' };
@@ -1154,7 +1303,7 @@ const RECIPIENT_ROLES = ['کارفرما', 'مدیرعامل', 'مدیر کار�
 
 const S = {
   settings: null, pkg: null, inspections: [], workplaces: [],
-  view: 'home', params: {}, admin: false, photoCache: {}, q: '', dashPeriod: 'year'
+  view: 'dash', params: {}, admin: false, photoCache: {}, q: '', dashPeriod: 'year'
 };
 
 const DEFAULT_SETTINGS = () => ({
@@ -1294,9 +1443,10 @@ function render() {
   $('#app').innerHTML = `
     <header class="top"><div class="top-in">
       <div class="brand">چک‌لیست بازرسی کار</div>
-      <nav>${nav.map(([v, l]) => `<button class="nav-b ${active === v ? 'on' : ''}" data-act="go" data-v="${v}">${l}</button>`).join('')}</nav>
+      <nav aria-label="بخش‌های سامانه">${nav.map(([v, l]) => `<button class="nav-b ${active === v ? 'on' : ''}" ${active === v ? 'aria-current="page"' : ''} data-act="go" data-v="${v}">${l}</button>`).join('')}</nav>
     </div></header>
-    <main class="wrap">${views[S.view]()}</main>`;
+    <main class="wrap">${views[S.view]()}</main>
+    <footer class="app-credit">طراحی و توسعه توسط گروه آمار، بودجه و تحول اداری اداره کل تعاون، کار و رفاه اجتماعی استان تهران</footer>`;
   afterRender();
 }
 
@@ -1307,7 +1457,7 @@ function afterRender() {
 
 const field = (label, attrs, value, kind) => kind === 'area'
   ? `<label class="fld"><span>${label}</span><textarea ${attrs} rows="2">${esc(value)}</textarea></label>`
-  : `<label class="fld"><span>${label}</span><input ${attrs} ${kind === 'num' ? 'inputmode="numeric" data-num' : kind === 'digits' ? 'data-num' : ''} value="${esc(kind ? faDigits(value) : value)}"></label>`;
+  : `<label class="fld"><span>${label}</span>${temporalKind(label) ? temporalControl(attrs,value,temporalKind(label)) : `<input ${attrs} ${kind === 'num' ? 'inputmode="numeric" data-num' : kind === 'digits' ? 'data-num' : ''} value="${esc(kind ? faDigits(value) : value)}">`}</label>`;
 
 // Full-screen signature pad. Resolves with a PNG data URL, or null when cancelled.
 function signFullscreen(title) {
@@ -1914,6 +2064,7 @@ const ACT = {
   delInsp: async () => {
     const insp = curInsp();
     if (!await confirmBox('حذف بازرسی', `بازرسی ${esc(serialOf(insp))} و تصاویر آن برای همیشه حذف شود؟`, 'حذف')) return;
+    clearTimeout(timers['insp:' + insp.id]); delete timers['insp:' + insp.id]; delete timers['insp:' + insp.id + ':fn'];
     for (const p of insp.photos) await DB.del('photos', p.id);
     await DB.del('inspections', insp.id);
     S.inspections = S.inspections.filter(i => i !== insp);
@@ -2057,6 +2208,298 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http') && docu
     $('#app').innerHTML = `<main class="wrap"><div class="banner err">برنامه اجرا نشد؛ آن را با Chrome باز کنید.<br><small dir="ltr">${esc(err && err.message)}</small></div></main>`;
   }
 })();
+
+;const WORD_FORMS = [{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر راستاي نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط طبق برنامه تنظیمی در تاریخ              از کارگاه / شركت                 بازرسي بعمل آمد كه ضمن ارايه مشخصات كارگاه مذكور، نتيجه بازرسي به شرح ذيل به استحضار مي رسد. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                                                    تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :   "},{"kind":"p","text":"نشاني كارگاه :  "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :                                               وضعيت حقوقي كارگاه : "},{"kind":"p","text":"فعاليت كارگاه :                                                تعداد كارگران :  "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي : "},{"kind":"p","text":" رديف 1 - عدم رعايت ماده 66آيين نامه حفاظت و بهداشت عمومي کارگاه ها"},{"kind":"p","text":"ماده 66 : براي كارگراني كه موقع كار در معرض سقوط اجسام قرار دارند بايد كفش حفاظتي و كلاه مخصوص حفاظتي از فلز و يا ماده سخت ديگري كه قابل اطمينان باشد تهيه شود."},{"kind":"p","text":"رديف 2 - عدم رعايت ماده 138آيين نامه ايمني ساختمان كارگاه ها "},{"kind":"p","text":"ماده138– کليه آسانسورها اعم از مسافري ،باري و يا هردو ،پله هاي برقي و پياده روهاي متحرک بايد توسط موسساتي که صلاحيت آنها مورد تاييد سازمان استاندارد و تحقيقات صنعتي ايران و ساير مراجع ذيصلاح مي باشد بصورت ساليانه بر اساس استانداردهاي معتبر مورد بازرسي قرار گرفته و گواهينامه سلامت دستگاههاي مذکور که حاوي نام شرکت، آدرس و تلفن ،نام بازرس ،تاريخ اعتبار گواهينامه مي باشد صادر و در داخل کابين و يا در محل مناسب نصب گردد."},{"kind":"p","text":"رديف 3 - عدم رعايت ماده 1آيين نامه حفاظتي وسايل حمل و نقل و جابجاكردن مواد و اشياء در كارگاه ها"},{"kind":"p","text":"ماده 1 : به طور كلي در بالابرها نكات زير بايد رعايت شود. الف - قسمت هاي مختلف بدنه و وسايل انتقال نيرو و ساير لوازم داراي استقامت كامل مكانيكي بوده و از جنس مرغوب ساخته شده و مقاومت مكانيكي آنها به تصويب مقام صلاحيت دار رسيده باشد. ب - دستگاه بايد در همه حال (چه در موقع كار و چه در توقف) بازديد و نگهداري شده و در تعمير آن دقت كافي مبذول گردد. ج - هر روز توسط متصدي دستگاه مورد بازديد قرار گرفته و حداقل هفته اي يك بار به وسيله متخصص مربوطه كه مسؤوليت كلي و فني آن را به عهده دارد دقيقاً بازرسي شود."},{"kind":"p","text":"رديف 4 - عدم رعايت ماده 10آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 10:كارگاه ساختماني بايد به طور مطمئن و ايمن محصور و از ورود افراد متفرقه و غيرمسئول به داخل آن جلوگيري بعمل آيد. همچنين نصب تابلوها و علايم هشدارنده كه در شب و روز قابل رويت باشد، در اطراف كارگاه ساختماني ضروري است. "},{"kind":"p","text":"رديف 5 - عدم رعايت ماده 11آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 11: قرار دادن و انبار كردن وسايل كار، مصالح ساختماني و نخاله هاي ساختماني در معابر عمومي مجاز نيست و چنانچه انجام اين امر براي مدت موقت و محدود اجتناب ناپذير باشد، بايد با شرايط زير اقدام گردد.الف - مجوز لازم از مرجع صدور پروانه ساختمان و ساير مراجع ذيربط و مسئول اخذ گردد.ب - نحوه قرار دادن، چيدن يا ريختن اين وسايل و مصالح و انتخاب مكان آن به ترتيبي باشد كه حوادث براي عابران و وسايل نقليه بوجود نياورد و در اطراف آن نرده هاي متحرك و وسايل كنترل مسير و همچنين تابلوها و علايم هشدار دهنده كه در شب و روز از فاصله مناسب قابل رويت باشد، نصب گردد."},{"kind":"p","text":"رديف 6 - عدم رعايت ماده 12آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 12: براي جلوگيري از سقوط مصالح ساختماني و ابزار كار بر روي كارگران و افرادي كه در محوطه كارگاه ساختماني از مجاور ساختمان دردست تخريب، احداث و يا تعمير و بازسازي عبور مي نمايند، بايد يك سرپوش حفاظتي با عرض و استحكام كافي از شبكه فلزي يا از جنس الوار چوبي با شرايط زير در ديواره اطراف ساختمان نصب گردد.الف - سرپوش حفاظتي بايد با توجه به ارتفاع و وضعيت ساختمان چنان طراحي و ساخته شود كه در اثر ريزش مصالح و ابزار كار بر روي آن هيچگونه خطري متوجه افرادي كه از زير آن عبور مي نمايند، نگردد.ب -زاويه سرپوش حفاظتي را نسبت به سطح افقي مي توان بين 30 تا 45 درجه به سوي ساختمان اختيار نمود. "},{"kind":"p","text":"رديف 7 - عدم رعايت ماده 15آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 15: كليه پرتگاه ها و دهانه هاي باز در قسمت هاي مختلف كارگاه ساختماني و محوطه آن كه احتمال خطر سقوط افراد را در بردارند، بايد تا زمان محصور شدن يا پوشيدن شدن نهايي و يا نصب حفاظ ها، پوشش ها و نرده هاي دائم و اصلي، به وسيله نرده ها يا پوشش هاي موقت به طور محكم و مناسب حفاظت گردند. "},{"kind":"p","text":"رديف 8 - عدم رعايت ماده 32آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 32: دستگاه ها ي بالابر ثابت از قبيل جرثقيل هاي برجي (Tower Cranes) و وينچ ها بايد به طور مطمئن در محل نصب خود مهار گرديده و وزنه هاي تعادل آنها متناسب با حداكثر ميزان حمل بار محاسبه و درنظر گرفته شود. در مورد جرثقيل هاي برجي، استحكام و مقاومت زمين محل استقرار دستگاه قبل از شروع عمليات نصب و مونتاژ بايد مورد بررسي قرار گيرد. هم چنين نحوه مهار اين دستگاه ها بايد به ترتيبي باشد كه در مقابل حداكثر نيروي باد و طوفان در محل، مقاومت كافي داشته باشند. "},{"kind":"p","text":"رديف 9 - عدم رعايت ماده 56آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 56: برپا كردن، پياده كردن و دادن تغييرات اساسي در داربست ها بايد تحت نظارت شخص ذيصلاح و به وسيله كارگراني كه در اين گونه كارها تجربه كافي دارند انجام گيرد.  "},{"kind":"p","text":"رديف 10 - عدم رعايت ماده 57آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 57: اجزاي داربست ها و كليه وسايلي كه در آن بكار ميرود بايد از مصالح مناسب و مرغوب، طوري طراحي، ساخته و آماده شوند كه واجد شرايط ايمني كار براي كارگران بوده و توانايي تحمل چهار برابر بار مورد نظر را داشته باشند. "},{"kind":"p","text":"رديف 11 - عدم رعايت ماده 58آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 58: قطعات چوبي كه در ساخت داربست ها بكار ميروند بايستي از كيفيت مرغوبي برخوردار بوده و الياف بلندي داشته باشند. همچنين عاري از هرگونه عيوب و بدون گره، پوسته، كرم خوردگي و پوسيدگي و نيز رنگ نشده باشند. "},{"kind":"p","text":"رديف 12 - عدم رعايت ماده 100آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 100:هر بخشي از جايگاه كار يا محل كاري كه بلندي آن بيش از 120 سانتيمتر باشد و امكان سقوط از روي آن وجود داشته باشد، بايد داراي جان پناه با شرايط زير باشد:الف - حفاظ از جنس مرغوب و مناسب و داراي استحكام كافي باشد.ب - نرده بالايي بين 90 تا 110 سانتيمتر بالاي سطح جايگاه قرار گيرد.ج - براي جلوگيري از سرخوردن كارگران و يا افتادن مصالح ساختماني و ابزار كار از روي جايگاه، پاخوري در لبه باز جايگاه به بلندي 15 سانتيمتر و ضخامت حداقل 5/2 سانتيمتر نصب شود.د - نرده مياني بين پاخور و نرده بالايي قرار داده شود.هـ - حتي الامكان سرپوش مناسب حفاظتي در لبه خارجي جايگاه ها نصب گردد. "},{"kind":"p","text":"رديف 13 - عدم رعايت ماده 207آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 207: كليه پرتگاه ها و دهانه هاي موجود در كف طبقات و ساير قسمت ها به استثناء دهانه هايي كه براي حمل و انتقال مواد و مصالح حاصل از تخريب و يا لوازم كار مورد استفاده قرار مي گيرند، بايد به وسيله نرده يا حفاظ هاي مناسب محصور يا پوشانده شوند. "},{"kind":"p","text":"رديف 14 - عدم رعايت ماده 2 آيين نامه ايمني كار درارتفاع"},{"kind":"p","text":"ماده2- کارفرما مكلف است با استفاده از سامانه هاي انجام ايمن كار در ارتفاع متناسب با نوع کار ، ايمني افرادي که در ارتفاع بيش از 2/1 متر (120 سانتي متر) نسبت به سطح مبنا مشغول کار مي باشند، را تامين نمايد."},{"kind":"p","text":"رديف 15 - عدم رعايت ماده 3 آيين نامه ايمني كار درارتفاع"},{"kind":"p","text":"ماده3- كارفرما مكلف است نسبت به تهيه لوازم و تجهيزات استاندارد و متناسب با نوع کار  در ارتفاع كه داراي لوح شناسايي حاوي اطلاعات فني  بوده و در محل مناسبي از تجهيزات قابل رويت ، نصب شده است را اقدام و در اختيار کارگران قرار دهد ."},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t  \t "},{"kind":"p","text":"\t\t\t\t بازرس كار \t "},{"kind":"p","text":""}],"source":"forms\\ساختمانی.doc"},{"blocks":[{"kind":"p","text":"\tجناب آقاي /سركار خانم :                                                                    مديريت محترم: "},{"kind":"p","text":"\tنشاني :                                                                                                     تلفن و کدملی کارفرما:                                                                      "},{"kind":"p","text":"\tبا سلام "},{"kind":"p","text":"\t       احتراما با عنايت به بند (ب) ماده 96 قانون كار در خصوص نظارت بر اجراي صحيح مقررات قانون كارو باتوجه به بازرسي مورخ    /     /1405 ضروريست ظرف مدت ........... اداري از تاريخ فوق از ساعت 8 الي 9 صبح با در دست داشتن مدارك درخواستي ذيل به واحد بازرسي كار اداره تعاون كار و رفاه اجتماعي شمالشرق مراجعه ونسبت به تحويل مدارك درخواستي اقدام نمائيد. بديهي است در صورت سپري شدن مهلت مذكور و عدم ارائه مدارك به استناد مواد  104 و 179  قانون كار ازطريق مراجع قضائي تقاضاي پيگرد  قانوني  كارفرماي كارگاه  به اجرا  گذارده خواهد شد . "},{"kind":"p","text":"\t    مجوز فعالیت  /  روز نامه رسمی (آخرین تغییرات شرکت در خصوص مشخصات مدير عامل )"},{"kind":"p","text":"\t    مدارکمرتبط در خصوص اجرای طرح طبقه بندی مشاغل  /                         ایجاد تشکلات کارگری در کارگاه "},{"kind":"p","text":"\t    آخرين ليست بيمه ، حقوق و مزاياي ارسالي به سازمان تامين اجتماعي  /              فيش هاي حقوقي پرسنل (تعداد كارگران شاغل ___ نفر ) "},{"kind":"p","text":"\t    فیش واریزی ماده 154 قانون کار و ماده 78 قانون وصول برخی از درآمدهای دولت در خصوص ایجاد و توسعه و تعمیر اماکن ورزشی کارگری به ازای هرکارگر سالیانه 000/250 ریال از طریق سامانه بانکی ساتنا به شماره شبای 910100004001018601019253 نزد بانک مرکزی به شناسه ثابت سي رقمي 334018674160171000000000000000 "},{"kind":"p","text":"\t    گواهي دوره هاي آموزش ايمني كارگران و كارفرمايان از مركز تحقيقات وتعليمات حفاظت فني وبهداشت كار "},{"kind":"p","text":"\t    اصل و تصویر قرارداد پرسنل "},{"kind":"p","text":"\t    تصويري از قرارداد منعقده با پيمانكاران اجرايي  و  گواهي صلاحيت ايمني آنان "},{"kind":"p","text":"\t    مستندات انجام ارزیابی ریسک و معرفي مسئول ايمني  "},{"kind":"p","text":"\t    مدارك مستند در خصوص تشكيل كميته حفاظت وبهداشت كار (موضوع ماده 93 قانون كار)"},{"kind":"p","text":"\t    مدارك مرتبط در خصوص بازرسي فني ساليانه مخازن تحت فشار  /   تاييديه تست هيدرواستاتيك مولد بخار"},{"kind":"p","text":"\t      تاییدیه سیستم اتصال زمین مؤثر (ارتينگ)  کارگاه از مراجع ذیصلاح"},{"kind":"p","text":"\t    مدارک مرتبط در خصوص انجام معاینات ادواری کارگران (موضوع ماده 92 قانون كار)"},{"kind":"p","text":"\t    مدارك مرتبط در خصوص طراحي و تاييديه عملكرد  سامانه آتش نشاني (سيستم اعلام و اطفاء) توسط مراجع ذيصلاح                                   "},{"kind":"p","text":"\t    مدارك مرتبط در خصوص بازرسي فني ساليانه  و گواهي سلامت آسانسور / بالابر/تاور كرين"},{"kind":"p","text":"\t    "},{"kind":"p","text":"\t       "},{"kind":"p","text":"https://crtosh.mcls.gov.ir/fa/asamimoshaveran)  ليست مشاوران حفاظت فني و خدمات ايمني وزارت كار)"},{"kind":"p","text":"\t"},{"kind":"p","text":"\tنام و نام خانوادگي تحويل گيرنده  :                                                                                                                                 بازرس كار"}],"source":"forms\\فرم درخواست مدارک.doc"},{"blocks":[{"kind":"p","text":"گزارش حضور در مرجع قضايي"},{"kind":"p","text":"\t"},{"kind":"p","text":"حسب دستور اداري هامش نامه شماره               مورخ                ،موضوع درخواست مقام محترم قضايي مبني بر ارايه توضيحات در رابطه پرونده بازرسي از کارگاه                         به استحضار مي رساند در تاريخ               به                      مراجعه و در خصوص موارد ذيل توضيحات لازم ارايه گرديد."},{"kind":"p","text":"    "},{"kind":"p","text":"\t\t\t\t  \t "},{"kind":"p","text":"\t\t\t\t  \t بازرس كار"}],"source":"forms\\گزارش حضور در مرجع قضايي.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tحسب دستور در تاریخ          به منظور بازرسی از كارگاه               به مدیریت آقای / خانم         "},{"kind":"p","text":"  نشاني                                                   مراجعه وطی بازرسی بعمل آمده مواردی به شرح ابلاغیه پیوست برخلاف آئین نامه های حفاظت وبهداشت کار ، خطرناک و ناایمن تشخیص داده شد لذا به استناد تبصره یک ماده 105 قانون کار موارد به کارفرما ابلاغ گردید. مراتب برای استحضار و صدور دستور مقتضی تقدیم می گردد. "},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t\t  \t "},{"kind":"p","text":"\t\t\t\t\t  \t بازرس كار "},{"kind":"p","text":""}],"source":"forms\\105\\درخواست تعطیلی دستگاه.كارگاه.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tاحتراما پیرو نامه شماره                 مورخ                      با عنوان  در خصوص تعطیلی  متعلق به آقای / خانم   به نشاني                             اطلاع می‌رساند کارفرمای مذکور نسبت به رفع نقص/ نواقص مندرج درابلاغیه شماره                 مورخ                   اقدام نموده است. مراتب برای استحضار و صدور دستور مقتضی ایفاد می گردد."},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t  \t  \t  "},{"kind":"p","text":"\t\t\t\t  \t  \t بازرس كار "},{"kind":"p","text":""}],"source":"forms\\105\\درخواست رفع تعطیل.doc"},{"blocks":[{"kind":"p","text":"صورتجلسه اجرای قرار تعطیل :"},{"kind":"p","text":"\tعطف به نامه / دستور شماره            مورخ                  مقام محترم قضائی، در تاريخ     اینجانب/ اينجانبان              بازرس/ بازرسان كار اين اداره در معيت آقاي  نماينده نيروي انتظامي به كارگاه         متعلق به آقاي / خانم                 به نشاني                                      براي اجراي قرار تعطيل مراجعه نمودیم که اقدامات بعمل آمده بشرح ذيل اعلام مي گردد."},{"kind":"p","text":"  "},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t بازرس/ بازرسان کار\t نماینده نیروی انتظامی \t کارفرما یا نماینده کارفرما"},{"kind":"p","text":"\t\t\t\t\t  \t "},{"kind":"p","text":"\t\t\t\t\t  "}],"source":"forms\\105\\صورتجلسه اجرای قرار تعطیل.doc"},{"blocks":[{"kind":"p","text":"جناب آقای / سرکار خانم :"},{"kind":"p","text":"كارفرماي محترم كارگاه / شرکت :"},{"kind":"p","text":"به نشاني :"},{"kind":"p","text":"\tطی بازرسي مورخ                    از آن کارگاه ، مواردي بشرح ذیل برخلاف آئین نامه های حفاظت فنی و بهداشت کار خطرناک و نا ایمن تشخیص داده می شود، لذا لازم است به استناد تبصره 1 ماده 105 قانون کار از کارکردن با موارد ذیل الاشاره خودداری نموده و حداکثر ظرف مدت      روز اداری برای اخذ مهلت موقت به منظور اصلاح نقایص ایمنی به اين اداره مراجعه نمایید. "},{"kind":"p","text":"بدیهی است درخواست جلوگیری از ادامه کار تا حصول ایمنی توسط اين اداره از مراجع قضایی بعمل خواهد آمد."},{"kind":"p","text":""},{"kind":"p","text":"\t"},{"kind":"p","text":"\t"},{"kind":"p","text":"\t"},{"kind":"p","text":"\t"},{"kind":"p","text":"\t"},{"kind":"p","text":"\t"},{"kind":"p","text":"\tبازرس/ بازرسان کار\tكارفرما یا نماینده کارفرما"}],"source":"forms\\105\\فرم ابلاغ ماده 105.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر راستاي نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط طبق برنامه تنظیمی در تاریخ                از کارگاه / شركت        بازرسي بعمل آمد كه ضمن ارايه مشخصات كارگاه مذكور، نتيجه بازرسي به شرح ذيل به استحضار مي رسد. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                 تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :   "},{"kind":"p","text":"نشاني كارگاه :    "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :                   وضعيت حقوقي كارگاه :   "},{"kind":"p","text":"فعاليت كارگاه :                                تعداد كارگران :   "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي : "},{"kind":"p","text":"  "},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t سعيد فرزين \t "},{"kind":"p","text":"\t\t\t\t بازرس كار \t "},{"kind":"p","text":""}],"source":"forms\\ادواری\\گزارش ادواری.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر راستاي نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط طبق برنامه تنظیمی در تاریخ                 از کارگاه / شركت                   بازرسي بعمل آمد كه ضمن ارايه مشخصات كارگاه مذكور، نتيجه بازرسي به شرح ذيل به استحضار مي رسد. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                   تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :  "},{"kind":"p","text":"نشاني كارگاه :    "},{"kind":"p","text":"تلفن كارگاه :    "},{"kind":"p","text":"وضعیت كارگاه :                                           وضعيت حقوقي كارگاه :   "},{"kind":"p","text":"فعاليت كارگاه :                                            تعداد كارگران :  "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي : "},{"kind":"p","text":" \nرديف 1 - عدم رعايت ماده 92 قانون كار\nماده 92- کليه واحد هاي موضوع ماده 85 اين قانون که شاغلين در آنها به اقتضاي نوع کاردر معرض بروز بيماري هاي ناشي از کار قراردارند بايد براي همه افرا د مذکور پرونده پزشکي تشکيل دهند وحداقل سالي يک بار توسط مراکز بهداشتي درماني ازآنها معاينه وآزمايش هاي لازم رابه عمل آورند .ونتيجه را در پرونده کارگاه ضبط نمايند . تبصره 1 - چنانچه باتشخيص شوراي پزشکي نظر داده شود که فرد معاينه شده به بيماري ناشي از کار مبتلا يادرمعرض ابتلا باشد کارفرما ومسئولين مربوطه مکلفند کاراورا براساس نظريه شوراي پزشکي مذکور بدون کاهش حق السعي ،درقسمت مناسب ديگري تــعيين نمايند . تبصره 2 - درصورت مشاهده چنين بيماراني ،وزارت کارواموراجتماعي مکلف به بازديد وتأييد مجدد شرايط فني وبهداشت وايمني محيط کار خواهد بود.\nرديف 2 - عدم رعايت ماده 93 قانون كار\nماده93 - به منظور جلب مشارکت کارگران ونظارت بر حسن اجراي  مقررات حفاظتي وبهداشتي در محيط کاروپيشگيري از حوادث وبيماري ها ،در کارگاه هايي که وزارت کار وامور اجتماعي ووزارت بهداشت ،درمان وآموزش پزشکي ضروري تشخيص دهند کميته حفاظت فني وبهداشت کار تشکيل خواهد شد .تبصره 1- کميته مذکور از افراد متخصص در زمينه حفاظت فني وبهداشت حرفه اي وامور فني کارگاه تشکيل مي شود واز بين اعضاء، دونفر شخص واجد شرايطي که مورد تاييد وزارتخانه هاي کار وامور اجتماعي وبهداشت ،درمان وآموزش پزشکي باشد تعيين مي گردند که وظيفه شان برقراري ارتباط ميان کميته مذکور با کارفرما ووزارت کار وامور اجتماعي ووزارت بهداشت ،درمان وآموزش پزشکي مي باشد. تبصره 2- نحوه تشکيل وترکيب اعضاء بر اساس دستورالعمل هايي خواهد بود که توسط وزارت کار وامور اجتماعي ووزارت بهداشت ، درمان وآموزش پزشکي تهيه وابلاغ خواهد شد .\nرديف 3 - عدم رعايت ماده 25آيين نامه حفاظت و بهداشت عمومي کارگاه ها\nماده 25 : كليه قسمت هاي انتقال دهنده نيرو (ترانسميسيون) از قبيل تسمه، فلكه، زنجير و چرخ دنده و امثال آن و همچنين قسمت هايي از ماشين ها كه امكان ايجاد سانحه براي كارگر داشته باشد بايد داراي پوشش و يا حفاظ با استقامت كافي باشد.\nرديف 4 - عدم رعايت ماده 61آيين نامه حفاظت و بهداشت عمومي کارگاه ها\nماده 61 : كارفرما موظف است در هر سال دو دست لباس كار مجاناً در اختيار هر كارگر بگذارد. لباس كار بايد مناسب با نوع كار باشد و طوري تهيه شود كه كارگر بتواند به راحتي وظائف خود را انجام دهد و موجب بروز سوانح نگردد. تبصره - به كارگران زن علاوه بر لباس كار بايد سربند نيز داده شود.\nرديف 5 - عدم رعايت ماده 62آيين نامه حفاظت و بهداشت عمومي کارگاه ها\nماده 62 : به كارگراني كه با مواد شيميايي كار مي كنند بايد علاوه بر لباس كار، بر حسب نوع كار وسايل استحفاظي لازم از قبيل پيش بند و كفش و دستكش مخصوص و عينك و غيره كه آنان را از آسيب مواد مزبور مصون دارد، داده شود.\nرديف 6 - عدم رعايت ماده 22 آيين نامه حفاظتي تاسيسات الکتريکي در کارگاه ها\nماده 22– کار فرما مکلف به اخذ تاييديه ساليانه صحت عملکرد سيستم اتصال به زمين ( الکترود ارت – دستگاه ها- همبندي ها و ديگر تجهيزات و متعلقات ) از وزارت کار و امور اجتماعي مي باشد.\nرديف 7 - عدم رعايت ماده 49 آيين نامه حفاظتي تاسيسات الکتريکي در کارگاه ها\nماده 49 – بدنه فلزي تابلوهاي برق بايستي مجهز به سيستم اتصال به زمين بوده و در قفل دار داشته باشد و پيرامون آن ها کفپوش يا سکوي عايق مؤثر نصب گردد.\nرديف 8 - عدم رعايت ماده 19 آيين نامه پيش گيري و مبارزه با آتش سوزي دركارگاه ها\nماده 19- كارفرما مکلف است براي كشف و اعلام به موقع حريق سامانه مناسبي را مطابق آن چه در فصل سوم به صورت مشروح آمده است با رعايت اصول علمي در كليه مكان هايي كه بروز حريق در آنها محتمل است نصب نمايد. \nرديف 9 - عدم رعايت ماده 20 آيين نامه پيش گيري و مبارزه با آتش سوزي دركارگاه ها\nماده 20- طراحي و عملكرد كليه سامانه هاي كشف،اعلام و اطفاء ثابت بايد طبق اصول علمي بوده و كارايي كافي در عملكرد را داشته باشند .عملكرد سامانه ها بايد به تاييد مقام صاحب صلاحيت برسد. شرح الزمات اين سامانه ها در فصل پنجم خواهد آمد.\nرديف 10 - عدم رعايت ماده 6آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 6: هر مولد بخار بايد داراي گواهينامه اي كه شامل كليه مدارك و مشخصات فني كه از طرف سازنده بكار رفته و همچنين محاسبات فني و ابعاد و اطلاعاتي كه با لوحه شناسايي تطبيق نمايد باشد.\nرديف 11 - عدم رعايت ماده 7آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 7: گواهينامه مذكور در ماده 6 بايد شامل كليه آزمايش هاي (مخرب و غير مخرب) كه در حين ساختمان مولد بخار روي مصالح و خود آن بعمل آمده است باشد.  \nرديف 12 - عدم رعايت ماده 8آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 8: گواهينامه مذكور بايد درتمام مدت در كارخانه نگهداري و در صورت مطالبه بازرسان كار ارائه گردد.  \nرديف 13 - عدم رعايت ماده 9آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 9: مولد بخار بايد از داخل و خارج به وسيله بازرسان بصير كه از طرف مقام صلاحيت دار اجازه داشته باشند به ترتيب زير بازرسي گردد.الف - درحين ساخت. ب - بعد از نصب و قبل از آنكه به كارانداخته شود.  ج - پس از هر نوع تعمير اساسي يا تجديد ساختمان و قبل از راه اندازي مجدد. د - منظماً در فواصل كمتر از 12 ماه.  \nرديف 14 - عدم رعايت ماده 10آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده10: هرموقع كه ازطرف مقام‎صلاحيت دار دستوربازرسي‎داخلي‎ مولد بخار صادر شود مالك‎ يا بهره‎بردار ‎موظف است براي موعد تعيين‎شده دستگاه را تخليه، سرد، باز و شستشو نمايد.  \nرديف 15 - عدم رعايت ماده 19آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 19: مركز توليد بخار با فشار قوي و متوسط لازم است در محل جداگانه اي به فاصله لااقل سه متر از بناهاي ديگر بوده و با مصالح غير قابل اشتعال ساخته شده باشد. محل مذكور و نحوه نصب مولد بخار بايد قبلا به تاييد مقام صلاحيت دار رسيده باشد.  \nرديف 16 - عدم رعايت ماده 38آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 38: هر مولد بخار بايد لااقل مجهز به يك سوپاپ اطمينان با رعايت شرايط زير باشد. الف - روي بدنه آن نصب شود.  ب - مستقيما و بلاواسطه به ديگ مربوط باشد. ج - مابين آن و مولد بخار و همچنين پس از آن تا دهانه خروج بخار هيچگونه مانع و شير ديگري قرار نگيرد.\nرديف 17 - عدم رعايت ماده 63آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 63: هر مولد بخار بايد داراي يك يا ترجيحاً دو آب نما باشد و در اين آب نماها مراتب و شرايط زير رعايت شود: الف - طوري قرار گيرد و يا با وسائلي مجهز شود كه به سهولت توسط متصدي مربوطه قابل رويت باشد.  ب - در بالا و پايين داراي شير زود بند باشد كه به سهولت بتوان در صورت شكستن شيشه آن را از روي زمين بست. ج - مستقيماً به بدنه مولد بخار توسط لوله هايي كه قطر داخلي آنها كمتر از 12 ميليمتر (نيم اينچ) نباشد متصل گردد. د - مجهز به شير تخليه بوده و فاضلاب آن در محلي بدون خطر هدايت شود.  هـ - مجهز به شيشه مسلح يا حفاظ مناسب ديگري باشد تا كارگران را در صورت شكستن شيشه و پرتاب ذرات آن و يا خروج آب و بخار داغ حفظ نمايد. بدون اين كه موجب اشكال خواندن و ديدن سطح آب گردد. ز - لازمست حد مجاز سطوح پايين و بالاي آب توسط علامت هايي روي لوله آب نما مشخص گردد.\nرديف 18 - عدم رعايت ماده 94آيين نامه حفاظتي مولد بخار و ديگ هاي آب گرم\nماده 94: اتوكلاوهايي كه مستقيماً با شعله گرم مي شوند بايد مجهز به يك ترموكوپل الكتريك باشند كه در داخل و كف اتوكلاو جوش شده باشد تا موقعي كه حرارت اتوكلاو از حد مجاز تجاوز كند سبب قطع سوخت اتوكلاو گردد.\nرديف 19 - عدم رعايت ماده 51 آيين نامه پيش گيري و مبارزه با آتش سوزي دركارگاه ها\nماده 51- وسايل تنفسي داراي كپسول، ممكن است همراه با وسيله تنفسي مشترك يا يك سوپاپ قطع كننده سريع باشد اگر در آن از لوازم فرعي استفاده شود نبايد سبب خسارت به وسيله يا در جريان هوا ايجاد محدوديت كند يا مانع كاركرد معمولي آن شود. تجهيزات تنفسي داراي هواي فشرده ممكن است با سيلندرهاي تاييد شده از ديگر وسايل تنفسي با هواي فشرده كه داراي ظرفيت و سرعت فشار مشابه هستند مورد استفاده قرار گيرد تمام سيلندر هاي هواي فشرده مورد استفاده با تجهيزات تنفسي بايد مطابق با استاندارد معتبر ملي يا بين المللي باشند.\nرديف 20 - عدم رعايت ماده 1 آيين نامه ايمني در آزمايشگاه ها\nاتاق ها و محل كار آزمايشگاهي ، بايد حداقل 3 متر از كف تا سقف ارتفاع داشته و فضاي مفيد بايد براي هر نفر از 12 متر مكعب كمتر نباشد. تبصره- در آزمايشگاه هايي كه ارتفاع هر طبقه از 4 متر بيشتر باشد براي محاسبه حجم لازم فقط تا ارتفاع 4 متر منظور ميگردد.\nرديف 21 - عدم رعايت ماده 2 آيين نامه ايمني در آزمايشگاه ها\nدر فضاي آزمايشگاه نصب تجهيزات و يا قرار دادن اشياء و محصولات نبايد مزاحمتي براي عبور و مرور يا كار كاركنان ايجاد نمايد و در اطراف هر دستگاه بايد فضاي كافي براي انجام آزمايش ، نظافت و در صورت لزوم اصلاحات و تعميرات منظور شود.\nرديف 22 - عدم رعايت ماده 3 آيين نامه ايمني در آزمايشگاه ها\nكف اتاق ها و قسمت هايي كه محل عبور يا حمل و نقل مواد است بايد صاف و هموار بوده و عاري از حفره و سوراخ، برآمدگي ناشي از پوشش بي تناسب مجاري، پيچ و مهره و لوله، دريچه يا برجستگي و هر گونه مانعي كه ممكن است موجب گير كردن و يا لغزيدن اشخاص شود باشد.\nرديف 23 - عدم رعايت ماده 4 آيين نامه ايمني در آزمايشگاه ها\nكف ، ديوار وسقف آزمايشگاه و انبار بايد قابل شستشو بوده و در موارد ريخته شدن مايعات بايد كف داراي شيب کافي باشد تا مواد به طرف مجاري فاضلاب هدايت گردد.\nرديف 24 - عدم رعايت ماده 15 آيين نامه ايمني در آزمايشگاه ها\nلوازم آتش نشاني و کمک هاي اوليه در محل هاي مناسب ، مشخص و در دسترس كاركنان نصب گردد.\nرديف 25 - عدم رعايت ماده 16 آيين نامه ايمني در آزمايشگاه ها\nكليه آزمايشگاه ها بايد داراي وسايل و تجهيزات كافي جهت پيشگيري و مبارزه با آتش سوزي بوده و در تمام ساعات شبانه روز اشخاصي که از آموزش لازم برخوردار بوده و به طريقه صحيح کاربرد وسايل و تجهيزات مربوطه آشنا مي باشند در آزمايشگاه حضور يابند. ضمناً کارکنان آزمايشگاه نيز بايد آموزش هاي لازم اطفاء حريق را ديده باشند.\nرديف 26 - عدم رعايت ماده 22 آيين نامه ايمني در آزمايشگاه ها\nمحل خوردن و آشاميدن بايد خارج از محيط آزمايشگاه باشد.\nرديف 27 - عدم رعايت ماده 23 آيين نامه ايمني در آزمايشگاه ها\nساختمان آزمايشگاه بايد به صورتي مناسب از فضاي اداري تفكيك شده باشد.\nرديف 28 - عدم رعايت ماده 29 آيين نامه ايمني در آزمايشگاه ها\nسطوح ميز کار آزمايشگاهي بايد قابل شستشو، يکپارچه و مقاوم به مواد شيميايي و حرارت باشند.\nرديف 29 - عدم رعايت ماده 32 آيين نامه ايمني در آزمايشگاه ها\nساختمان و طبقات نگهدارنده در انبارهاي مواد شيميايي بايد از مصالح نسوز و مقاوم ساخته شود و انبار جداگانه اي به مواد شيميايي قابل اشتعال و انفجار اختصاص يابد.\nرديف 30 - عدم رعايت ماده 33 آيين نامه ايمني در آزمايشگاه ها\nآزمايشگاه و انبار بايد مجهز به تجهيزات تهويه عمومي و در صورت لزوم تهويه موضعي ضد جرقه باشد.\nرديف 31 - عدم رعايت ماده 71 آيين نامه ايمني در آزمايشگاه ها\nسيلندرهاي گاز اعم از پر يا خالي بايد در محل مناسب و به حالت عمودي با استفاده از تسمه، زنجير يا بست به طور ايمن مهار گردند.\nرديف 32 - عدم رعايت ماده 72 آيين نامه ايمني در آزمايشگاه ها\nبه هنگام جابجايي سيلندرهاي گاز بايد رگلاتور از شير جدا شده و توسط درپوش محافظت گردند.\nرديف 33 - عدم رعايت ماده 73 آيين نامه ايمني در آزمايشگاه ها\nبراي حمل سيلندرهاي گاز بايد از چرخ دستي هاي مناسب استفاده گردد.\nرديف 34 - عدم رعايت ماده 38آيين نامه ايمني جوشكاري و برشكاري گرم\n ماده 38 : پر كردن سيلندرهاي اكسيژن و انواع گازها بايد توسط مراكز مجاز ومعتبر صورت پذيرد. \nرديف 35 - عدم رعايت ماده 39آيين نامه ايمني جوشكاري و برشكاري گرم\n ماده 39: سيلندرهاي اكسيژن و انواع گازها بايد بصورت ادواري و بر اساس آيين نامه هاي حفاظتي و استانداردهاي ملي توسط کارفرما مورد بازديد و آزمايش قرار گيرد. "},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t سعيد فرزين \t "},{"kind":"p","text":"\t\t\t\t بازرس كار \t "},{"kind":"p","text":""}],"source":"forms\\بیمارستان\\RepBaz_01_01_255_14050813.doc"},{"blocks":[{"kind":"p","text":"گزارش بازرسي تحقيق: "},{"kind":"p","text":"\tحسب دستور اداري وبه منظور بررسي درخواست هيات تشخيص/ حل اختلاف مبني برتحقيق در خصوص موارد ذيل در تاریخ             از کارگاه / شركت                بازرسي بعمل آمد كه ضمن ارايه مشخصات عمومي كارگاه و پرونده مذكور، نتيجه بازرسي به شرح ذيل به استحضار مي رسد:"},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":""},{"kind":"p","text":"مشخصات عمومی پرونده"}]},{"blocks":[{"kind":"p","text":"کلاسه پرونده :            "},{"kind":"p","text":"نام و نام خانوادگي خواهان :  "},{"kind":"p","text":"نام و نام خانوادگي كارفرما/خوانده :                        "},{"kind":"p","text":"مرجع درخواست کننده تحقيق :"},{"kind":"p","text":"تاريخ صدور قرار تحقيق:"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"مشخصات عمومی کارگاه"},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""}]},{"blocks":[{"kind":"p","text":"كد كارگاه :                                        تاريخ بازرسي :   "},{"kind":"p","text":"نشاني كارگاه :  "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :                                      وضعيت حقوقي كارگاه :  "},{"kind":"p","text":"فعاليت كارگاه :                                       تعداد كارگران :  "},{"kind":"p","text":"محصولات توليدي : "}]}]}]},{"kind":"p","text":""},{"kind":"p","text":"نتيجه بازرسي :"},{"kind":"p","text":"  "},{"kind":"p","text":"  "},{"kind":"p","text":"\t\t\t  \t "},{"kind":"p","text":"\t\t\t بازرس كار \t "}],"source":"forms\\تحقیق\\گزارش تحقیق.doc"},{"blocks":[{"kind":"p","text":"\tمشخصات کارگاه : "},{"kind":"p","text":"\t1- نام كارگاه :                                                                              2- نام و نام خانوادگي کارفرما و كدملي : "},{"kind":"p","text":"\t3- نشانی کارگاه :                                                                          تلفن  همراه كارفرما : "},{"kind":"p","text":"\t4- نام و نام خانوادگي پیمانکار  و كدملي:                                          تلفن همراه  پيمانكار :    "},{"kind":"p","text":"\t---------------------------------------------------------------------------"},{"kind":"p","text":"\tمشخصات کارگر حادثه دیده :                                                             تلفن همراه حادثه ديده :"},{"kind":"p","text":"\t1- نام ونام خانوادگی :\t2- سن : "},{"kind":"p","text":"\t3- وضعیت تاهل : \t4- میزان تحصیلات : "},{"kind":"p","text":"\t5- جمع مزد ومزایا(روزانه) :     \t6- شغل کارگر در کارکاه :  "},{"kind":"p","text":"\t7- سابقه کار در کارگاه :\t8- سابقه کار درشغل فعلی : "},{"kind":"p","text":"\t9- وضعیت بیمه :دارد \t10- ملیت کارگر :  "},{"kind":"p","text":"\t11- عضو حادثه دیده :\t12- نتیجه حادثه: "},{"kind":"p","text":"\t13- کار حادثه دیده هنگام وقوع حادثه : "},{"kind":"p","text":"\t---------------------------------------------------------------------------"},{"kind":"p","text":"\tمشخصات حادثه : "},{"kind":"p","text":"\t1- تاریخ وساعت وقوع حادثه :\t2- تاریخ بازرسی حادثه : "},{"kind":"p","text":"\t3- منبع خبر دهنده : "},{"kind":"p","text":"\t---------------------------------------------------------------------------"},{"kind":"p","text":"\tشرح وقوع و علت حادثه :   "}],"source":"forms\\حادثه\\فرم حادثه.docx"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر بازرسي مورخ             كه از کارگاه / شركت                          بمنظور نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط بعمل آمد، ضمن تهيه مشخصات كارگاه مذكور، نتيجه بازرسي را به شرح ذيل به استحضار مي رساند. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                    تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :  "},{"kind":"p","text":"نشاني كارگاه :    "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :           وضعيت حقوقي كارگاه : ف "},{"kind":"p","text":"فعاليت كارگاه :                                        تعداد كارگران :   "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي :"},{"kind":"p","text":"ضمن بازرسي مشخص گرديدكه نقايص قانون كار و آيين نامه هاي حفاظت فني و بهداشت كاركه قبلا طي نامه شماره                           مورخ                   به كارفرماي كارگاه مذكورابلاغ گرديده بود، به شرح ذيل مرتفع نگرديده است :"},{"kind":"p","text":"  1-"},{"kind":"p","text":"2-"},{"kind":"p","text":"در خاتمه به استناد مواد 91 و 176 قانون كار، تقاضاي پيگرد قانوني كارفرماي متخلف فوق الذكر را نسبت به موارد تخلف مذكور دارد ."},{"kind":"p","text":"\t\t\t\t بازرس كار \t "}],"source":"forms\\عدم ارائه مدارک\\درخواست تعقيب كارفرما.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tاحتراما پیرو نامه شماره                    مورخ                    با عنوان  در خصوص تعقیب آقای / خانم          کارفرمای شرکت / کارگاه                به نشاني                                                     به اطلاع می رساند کارفرمای مذکور نسبت به رفع نقص/ نواقص مندرج درابلاغیه شماره  مورخ     اقدام نموده است. مراتب برای استحضار و صدور دستور مقتضی ایفاد می گردد."},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t\t  \t   "},{"kind":"p","text":"\t\t\t\t\t\t  \t بازرس كار "},{"kind":"p","text":""}],"source":"forms\\عدم ارائه مدارک\\درخواست رفع تعقیب.doc"},{"blocks":[{"kind":"p","text":"\tجناب آقاي /سركار خانم :                                                                    مديريت محترم: "},{"kind":"p","text":"\tنشاني :                                                                                                     تلفن و کدملی کارفرما:                                                                      "},{"kind":"p","text":"\tبا سلام "},{"kind":"p","text":"\t       احتراما با عنايت به بند (ب) ماده 96 قانون كار در خصوص نظارت بر اجراي صحيح مقررات قانون كارو باتوجه به بازرسي مورخ    /     /1405 ضروريست ظرف مدت ........... اداري از تاريخ فوق از ساعت 8 الي 9 صبح با در دست داشتن مدارك درخواستي ذيل به واحد بازرسي كار اداره تعاون كار و رفاه اجتماعي شمالشرق مراجعه ونسبت به تحويل مدارك درخواستي اقدام نمائيد. بديهي است در صورت سپري شدن مهلت مذكور و عدم ارائه مدارك به استناد مواد  104 و 179  قانون كار ازطريق مراجع قضائي تقاضاي پيگرد  قانوني  كارفرماي كارگاه  به اجرا  گذارده خواهد شد . "},{"kind":"p","text":"\t    مجوز فعالیت  /  روز نامه رسمی (آخرین تغییرات شرکت در خصوص مشخصات مدير عامل )"},{"kind":"p","text":"\t    مدارکمرتبط در خصوص اجرای طرح طبقه بندی مشاغل  /                         ایجاد تشکلات کارگری در کارگاه "},{"kind":"p","text":"\t    آخرين ليست بيمه ، حقوق و مزاياي ارسالي به سازمان تامين اجتماعي  /              فيش هاي حقوقي پرسنل (تعداد كارگران شاغل ___ نفر ) "},{"kind":"p","text":"\t    فیش واریزی ماده 154 قانون کار و ماده 78 قانون وصول برخی از درآمدهای دولت در خصوص ایجاد و توسعه و تعمیر اماکن ورزشی کارگری به ازای هرکارگر سالیانه 000/250 ریال از طریق سامانه بانکی ساتنا به شماره شبای 910100004001018601019253 نزد بانک مرکزی به شناسه ثابت سي رقمي 334018674160171000000000000000 "},{"kind":"p","text":"\t    گواهي دوره هاي آموزش ايمني كارگران و كارفرمايان از مركز تحقيقات وتعليمات حفاظت فني وبهداشت كار "},{"kind":"p","text":"\t    اصل و تصویر قرارداد پرسنل "},{"kind":"p","text":"\t    تصويري از قرارداد منعقده با پيمانكاران اجرايي  و  گواهي صلاحيت ايمني آنان "},{"kind":"p","text":"\t    مستندات انجام ارزیابی ریسک و معرفي مسئول ايمني  "},{"kind":"p","text":"\t    مدارك مستند در خصوص تشكيل كميته حفاظت وبهداشت كار (موضوع ماده 93 قانون كار)"},{"kind":"p","text":"\t    مدارك مرتبط در خصوص بازرسي فني ساليانه مخازن تحت فشار  /   تاييديه تست هيدرواستاتيك مولد بخار"},{"kind":"p","text":"\t      تاییدیه سیستم اتصال زمین مؤثر (ارتينگ)  کارگاه از مراجع ذیصلاح"},{"kind":"p","text":"\t    مدارک مرتبط در خصوص انجام معاینات ادواری کارگران (موضوع ماده 92 قانون كار)"},{"kind":"p","text":"\t    مدارك مرتبط در خصوص طراحي و تاييديه عملكرد  سامانه آتش نشاني (سيستم اعلام و اطفاء) توسط مراجع ذيصلاح                                   "},{"kind":"p","text":"\t    مدارك مرتبط در خصوص بازرسي فني ساليانه  و گواهي سلامت آسانسور / بالابر/تاور كرين"},{"kind":"p","text":"\t    "},{"kind":"p","text":"\t       "},{"kind":"p","text":"https://crtosh.mcls.gov.ir/fa/asamimoshaveran)  ليست مشاوران حفاظت فني و خدمات ايمني وزارت كار)"},{"kind":"p","text":"\t"},{"kind":"p","text":"\tنام و نام خانوادگي تحويل گيرنده  :                                                                                                                                 بازرس كار"}],"source":"forms\\عدم ارائه مدارک\\فرم درخواست مدارک.doc"},{"blocks":[{"kind":"p","text":"  گزارش  "},{"kind":"p","text":"\t"},{"kind":"p","text":"حسب دستور اداري و به منظور نظارت براجراي مقررات قانون كار وآئين نامه هاي حفاظت و بهداشت كار وساير دستورالعمل هاي مرتبط در تاريخ              ، به کارگاه / شركت :    به کارفرمايي آقا/خانم :  مراجعه گرديد ليکن کارفرما/ نماينده کارفرماي مذکور  از ارائه مدارک درخواستی امتناع نموده "},{"kind":"p","text":"لذا با عنايت به ماده 104 قانون کار و به استناد ماده 179 اين قانون، تقاضاي پيگرد قانوني كارفرماي متخلف فوق الذكر را دارد."},{"kind":"p","text":" "},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t  \t سعيد فرزين"},{"kind":"p","text":"\t\t\t\t  \t بازرس كار"},{"kind":"p","text":""}],"source":"forms\\عدم ارائه مدارک\\گزارش عدم ارائه مدارک به بازرس.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر بازرسي مورخ             كه از کارگاه / شركت                          بمنظور نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط بعمل آمد، ضمن تهيه مشخصات كارگاه مذكور، نتيجه بازرسي را به شرح ذيل به استحضار مي رساند. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                    تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :  "},{"kind":"p","text":"نشاني كارگاه :    "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :           وضعيت حقوقي كارگاه : ف "},{"kind":"p","text":"فعاليت كارگاه :                                        تعداد كارگران :   "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي :"},{"kind":"p","text":"ضمن بازرسي مشخص گرديدكه نقايص قانون كار و آيين نامه هاي حفاظت فني و بهداشت كاركه قبلا طي نامه شماره                           مورخ                   به كارفرماي كارگاه مذكورابلاغ گرديده بود، به شرح ذيل مرتفع نگرديده است :"},{"kind":"p","text":"  1-"},{"kind":"p","text":"2-"},{"kind":"p","text":"در خاتمه به استناد مواد 91 و 176 قانون كار، تقاضاي پيگرد قانوني كارفرماي متخلف فوق الذكر را نسبت به موارد تخلف مذكور دارد ."},{"kind":"p","text":"\t\t\t\t بازرس كار \t "}],"source":"forms\\ممانعت از ورود\\درخواست تعقيب كارفرما.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tاحتراما پیرو نامه شماره                    مورخ                    با عنوان  در خصوص تعقیب آقای / خانم          کارفرمای شرکت / کارگاه                به نشاني                                                     به اطلاع می رساند کارفرمای مذکور نسبت به رفع نقص/ نواقص مندرج درابلاغیه شماره  مورخ     اقدام نموده است. مراتب برای استحضار و صدور دستور مقتضی ایفاد می گردد."},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t\t  \t   "},{"kind":"p","text":"\t\t\t\t\t\t  \t بازرس كار "},{"kind":"p","text":""}],"source":"forms\\ممانعت از ورود\\درخواست رفع تعقیب.doc"},{"blocks":[{"kind":"p","text":"  گزارش  "},{"kind":"p","text":"\t"},{"kind":"p","text":"حسب دستور اداري و به منظور نظارت براجراي مقررات قانون كار وآئين نامه هاي حفاظت و بهداشت كار وساير دستورالعمل هاي مرتبط در تاريخ              ، به کارگاه / شركت :    به کارفرمايي آقا/خانم :  مراجعه گرديد ليکن کارفرما/ نماينده کارفرماي مذکور  از ورود بازرس کار به داخل کارگاه ممانعت بعمل آمورده"},{"kind":"p","text":"لذا با عنايت به ماده 104 قانون کار و به استناد ماده 179 اين قانون، تقاضاي پيگرد قانوني كارفرماي متخلف فوق الذكر را دارد."},{"kind":"p","text":" "},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t  \t سعيد فرزين"},{"kind":"p","text":"\t\t\t\t  \t بازرس كار"},{"kind":"p","text":""}],"source":"forms\\ممانعت از ورود\\گزارش ممانعت از ورود بازرس.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر راستاي نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط طبق برنامه تنظیمی در تاریخ                از کارگاه / شركت        بازرسي بعمل آمد كه ضمن ارايه مشخصات كارگاه مذكور، نتيجه بازرسي به شرح ذيل به استحضار مي رسد. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                 تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :   "},{"kind":"p","text":"نشاني كارگاه :    "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :                   وضعيت حقوقي كارگاه :   "},{"kind":"p","text":"فعاليت كارگاه :                                تعداد كارگران :   "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي : "},{"kind":"p","text":"  "},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t سعيد فرزين \t "},{"kind":"p","text":"\t\t\t\t بازرس كار \t "},{"kind":"p","text":""}],"source":"forms\\موردی\\گزارش موردی.doc"},{"blocks":[{"kind":"p","text":"گزارش : "},{"kind":"p","text":"\tدر راستاي نظارت بر اجراي مقررات قانون كار و آئين نامه هاي حفاظت و بهداشت كار و ساير دستورالعمل های مرتبط طبق برنامه تنظیمی در تاریخ              از کارگاه / شركت                 بازرسي بعمل آمد كه ضمن ارايه مشخصات كارگاه مذكور، نتيجه بازرسي به شرح ذيل به استحضار مي رسد. "},{"kind":"p","text":""},{"kind":"table","rows":[{"cells":[{"blocks":[{"kind":"p","text":"\t\t\tمشخصات عمومی کارگاه"}]}]},{"cells":[{"blocks":[{"kind":"p","text":"كد كارگاه :                                                    تاريخ بازرسي :   "},{"kind":"p","text":"نام و نام خانوادگي كارفرما :   "},{"kind":"p","text":"نشاني كارگاه :  "},{"kind":"p","text":"تلفن كارگاه :  "},{"kind":"p","text":"وضعیت كارگاه :                                               وضعيت حقوقي كارگاه : "},{"kind":"p","text":"فعاليت كارگاه :                                                تعداد كارگران :  "},{"kind":"p","text":"محصولات توليدي :   "}]}]}]},{"kind":"p","text":"نتيجه بازرسي : "},{"kind":"p","text":" رديف 1 - عدم رعايت ماده 66آيين نامه حفاظت و بهداشت عمومي کارگاه ها"},{"kind":"p","text":"ماده 66 : براي كارگراني كه موقع كار در معرض سقوط اجسام قرار دارند بايد كفش حفاظتي و كلاه مخصوص حفاظتي از فلز و يا ماده سخت ديگري كه قابل اطمينان باشد تهيه شود."},{"kind":"p","text":"رديف 2 - عدم رعايت ماده 138آيين نامه ايمني ساختمان كارگاه ها "},{"kind":"p","text":"ماده138– کليه آسانسورها اعم از مسافري ،باري و يا هردو ،پله هاي برقي و پياده روهاي متحرک بايد توسط موسساتي که صلاحيت آنها مورد تاييد سازمان استاندارد و تحقيقات صنعتي ايران و ساير مراجع ذيصلاح مي باشد بصورت ساليانه بر اساس استانداردهاي معتبر مورد بازرسي قرار گرفته و گواهينامه سلامت دستگاههاي مذکور که حاوي نام شرکت، آدرس و تلفن ،نام بازرس ،تاريخ اعتبار گواهينامه مي باشد صادر و در داخل کابين و يا در محل مناسب نصب گردد."},{"kind":"p","text":"رديف 3 - عدم رعايت ماده 1آيين نامه حفاظتي وسايل حمل و نقل و جابجاكردن مواد و اشياء در كارگاه ها"},{"kind":"p","text":"ماده 1 : به طور كلي در بالابرها نكات زير بايد رعايت شود. الف - قسمت هاي مختلف بدنه و وسايل انتقال نيرو و ساير لوازم داراي استقامت كامل مكانيكي بوده و از جنس مرغوب ساخته شده و مقاومت مكانيكي آنها به تصويب مقام صلاحيت دار رسيده باشد. ب - دستگاه بايد در همه حال (چه در موقع كار و چه در توقف) بازديد و نگهداري شده و در تعمير آن دقت كافي مبذول گردد. ج - هر روز توسط متصدي دستگاه مورد بازديد قرار گرفته و حداقل هفته اي يك بار به وسيله متخصص مربوطه كه مسؤوليت كلي و فني آن را به عهده دارد دقيقاً بازرسي شود."},{"kind":"p","text":"رديف 4 - عدم رعايت ماده 10آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 10:كارگاه ساختماني بايد به طور مطمئن و ايمن محصور و از ورود افراد متفرقه و غيرمسئول به داخل آن جلوگيري بعمل آيد. همچنين نصب تابلوها و علايم هشدارنده كه در شب و روز قابل رويت باشد، در اطراف كارگاه ساختماني ضروري است. "},{"kind":"p","text":"رديف 5 - عدم رعايت ماده 11آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 11: قرار دادن و انبار كردن وسايل كار، مصالح ساختماني و نخاله هاي ساختماني در معابر عمومي مجاز نيست و چنانچه انجام اين امر براي مدت موقت و محدود اجتناب ناپذير باشد، بايد با شرايط زير اقدام گردد.الف - مجوز لازم از مرجع صدور پروانه ساختمان و ساير مراجع ذيربط و مسئول اخذ گردد.ب - نحوه قرار دادن، چيدن يا ريختن اين وسايل و مصالح و انتخاب مكان آن به ترتيبي باشد كه حوادث براي عابران و وسايل نقليه بوجود نياورد و در اطراف آن نرده هاي متحرك و وسايل كنترل مسير و همچنين تابلوها و علايم هشدار دهنده كه در شب و روز از فاصله مناسب قابل رويت باشد، نصب گردد."},{"kind":"p","text":"رديف 6 - عدم رعايت ماده 12آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 12: براي جلوگيري از سقوط مصالح ساختماني و ابزار كار بر روي كارگران و افرادي كه در محوطه كارگاه ساختماني از مجاور ساختمان دردست تخريب، احداث و يا تعمير و بازسازي عبور مي نمايند، بايد يك سرپوش حفاظتي با عرض و استحكام كافي از شبكه فلزي يا از جنس الوار چوبي با شرايط زير در ديواره اطراف ساختمان نصب گردد.الف - سرپوش حفاظتي بايد با توجه به ارتفاع و وضعيت ساختمان چنان طراحي و ساخته شود كه در اثر ريزش مصالح و ابزار كار بر روي آن هيچگونه خطري متوجه افرادي كه از زير آن عبور مي نمايند، نگردد.ب -زاويه سرپوش حفاظتي را نسبت به سطح افقي مي توان بين 30 تا 45 درجه به سوي ساختمان اختيار نمود. "},{"kind":"p","text":"رديف 7 - عدم رعايت ماده 15آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 15: كليه پرتگاه ها و دهانه هاي باز در قسمت هاي مختلف كارگاه ساختماني و محوطه آن كه احتمال خطر سقوط افراد را در بردارند، بايد تا زمان محصور شدن يا پوشيدن شدن نهايي و يا نصب حفاظ ها، پوشش ها و نرده هاي دائم و اصلي، به وسيله نرده ها يا پوشش هاي موقت به طور محكم و مناسب حفاظت گردند. "},{"kind":"p","text":"رديف 8 - عدم رعايت ماده 32آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 32: دستگاه ها ي بالابر ثابت از قبيل جرثقيل هاي برجي (Tower Cranes) و وينچ ها بايد به طور مطمئن در محل نصب خود مهار گرديده و وزنه هاي تعادل آنها متناسب با حداكثر ميزان حمل بار محاسبه و درنظر گرفته شود. در مورد جرثقيل هاي برجي، استحكام و مقاومت زمين محل استقرار دستگاه قبل از شروع عمليات نصب و مونتاژ بايد مورد بررسي قرار گيرد. هم چنين نحوه مهار اين دستگاه ها بايد به ترتيبي باشد كه در مقابل حداكثر نيروي باد و طوفان در محل، مقاومت كافي داشته باشند. "},{"kind":"p","text":"رديف 9 - عدم رعايت ماده 56آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 56: برپا كردن، پياده كردن و دادن تغييرات اساسي در داربست ها بايد تحت نظارت شخص ذيصلاح و به وسيله كارگراني كه در اين گونه كارها تجربه كافي دارند انجام گيرد.  "},{"kind":"p","text":"رديف 10 - عدم رعايت ماده 57آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 57: اجزاي داربست ها و كليه وسايلي كه در آن بكار ميرود بايد از مصالح مناسب و مرغوب، طوري طراحي، ساخته و آماده شوند كه واجد شرايط ايمني كار براي كارگران بوده و توانايي تحمل چهار برابر بار مورد نظر را داشته باشند. "},{"kind":"p","text":"رديف 11 - عدم رعايت ماده 58آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 58: قطعات چوبي كه در ساخت داربست ها بكار ميروند بايستي از كيفيت مرغوبي برخوردار بوده و الياف بلندي داشته باشند. همچنين عاري از هرگونه عيوب و بدون گره، پوسته، كرم خوردگي و پوسيدگي و نيز رنگ نشده باشند. "},{"kind":"p","text":"رديف 12 - عدم رعايت ماده 100آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 100:هر بخشي از جايگاه كار يا محل كاري كه بلندي آن بيش از 120 سانتيمتر باشد و امكان سقوط از روي آن وجود داشته باشد، بايد داراي جان پناه با شرايط زير باشد:الف - حفاظ از جنس مرغوب و مناسب و داراي استحكام كافي باشد.ب - نرده بالايي بين 90 تا 110 سانتيمتر بالاي سطح جايگاه قرار گيرد.ج - براي جلوگيري از سرخوردن كارگران و يا افتادن مصالح ساختماني و ابزار كار از روي جايگاه، پاخوري در لبه باز جايگاه به بلندي 15 سانتيمتر و ضخامت حداقل 5/2 سانتيمتر نصب شود.د - نرده مياني بين پاخور و نرده بالايي قرار داده شود.هـ - حتي الامكان سرپوش مناسب حفاظتي در لبه خارجي جايگاه ها نصب گردد. "},{"kind":"p","text":"رديف 13 - عدم رعايت ماده 207آيين نامه حفاظتي كارگاه هاي ساختماني"},{"kind":"p","text":"ماده 207: كليه پرتگاه ها و دهانه هاي موجود در كف طبقات و ساير قسمت ها به استثناء دهانه هايي كه براي حمل و انتقال مواد و مصالح حاصل از تخريب و يا لوازم كار مورد استفاده قرار مي گيرند، بايد به وسيله نرده يا حفاظ هاي مناسب محصور يا پوشانده شوند. "},{"kind":"p","text":"رديف 14 - عدم رعايت ماده 2 آيين نامه ايمني كار درارتفاع"},{"kind":"p","text":"ماده2- کارفرما مكلف است با استفاده از سامانه هاي انجام ايمن كار در ارتفاع متناسب با نوع کار ، ايمني افرادي که در ارتفاع بيش از 2/1 متر (120 سانتي متر) نسبت به سطح مبنا مشغول کار مي باشند، را تامين نمايد."},{"kind":"p","text":"رديف 15 - عدم رعايت ماده 3 آيين نامه ايمني كار درارتفاع"},{"kind":"p","text":"ماده3- كارفرما مكلف است نسبت به تهيه لوازم و تجهيزات استاندارد و متناسب با نوع کار  در ارتفاع كه داراي لوح شناسايي حاوي اطلاعات فني  بوده و در محل مناسبي از تجهيزات قابل رويت ، نصب شده است را اقدام و در اختيار کارگران قرار دهد ."},{"kind":"p","text":"رديف 15 - عدم رعايت ماده 3آيين نامه اجرايي كارهاي سخت و زيان آور"},{"kind":"p","text":"ماده 3: كارفرمايان كارگاه‌هاي داير كه از تاريخ تصويب اين آيين نامه تمام يا برخي از مشاغل آنها در كميته‌هاي بدوي و تجديد نظر استاني يا شوراي عالي حفاظت فني ، ‌سخت و زيان آور شناخته شده يا مي شود مكلفند ظرف دو سال از تاريخ ابلاغ تصميم قطعي كميته يا شورا حسب مورد نسبت به ايمن‌سازي عوامل و شرايط محيط كار مطابق حد مجاز و استاندارد‌هاي مشخص شده در قانون كار و آيين نامه هاي مربوط( مصوب شوراي عالي حفاظت فني ) و ساير قوانين موضوعه در اين زمينه اقدام و صفت سخت و زيان آوري مشاغل موضوع بند \"الف\" ماده (1) را حذف و نتيجه را كتباً به كميته بدوي موضوع ماده (8) اين آيين نامه براي بررسي و تاييد گزارش نمايند . تبصره – وزارتخانه‌هاي كار و امور اجتماعي و بهداشت ،‌درمان و آموزش پزشكي مكلفند كارگاه‌هايي كه مشاغل آنها سخت و زيان آور شناخته شده است و يا طبق اين آيين نامه سخت و زيان آور تعيين مي‌گردد پس از گذشت مهلت مقرر در اين ماده بازديد و نتيجه را كتباً به كميته بدوي استان گزارش نمايند ."},{"kind":"p","text":"رديف 16- عدم رعايت ماده 6آيين نامه اجرايي كارهاي سخت و زيان آور"},{"kind":"p","text":"ماده6:كميته بدوي استان موظف است حسب گزارش كارشناسان موضوع ماده (2) بررسي و در صورت تاييد ،‌حذف يا كاهش صفت سخت و زيان آور به ترتيب در مشاغل بند \"الف\" و \"ب\" ماده يك مراتب را براي خروج كارگاه از شمول اين آيين نامه به مراجع ذي ربط ابلاغ نمايد و در صورت عدم حذف صفت سخت و زيان آوري محيط كار در مشاغل بند \"الف\" ظرف مهلت مقرر ، مطابق قانون كار از سوي وزارتخانه‌هاي كار و امور اجتماعي ، بهداشت و درمان و آموزش پزشكي از طريق مراجع ذي صلاح اقدام لازم بعمل مي آيد . تبصره – در صورتي كه گزارش كارشناسان موضوع اين ماده پس ازتاييد كميته‌هاي بدوي و تجديد نظر استاني حسب مورد حاكي از عدم كاهش يا حذف عوامل زيان آور و بيماريزاي محيط كار ظرف مهلت مقرر در قانون باشد اقدامات لازم بر حسب مورد مطابق قانون كار از سوي وزارتخانه هاي كار و امور اجتماعي و بهداشت ، درمان  و آموزش پزشكي بعمل خواهد آمد ."},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":""},{"kind":"p","text":"\t\t\t\t  \t "},{"kind":"p","text":"\t\t\t\t بازرس كار \t "},{"kind":"p","text":""}],"source":"forms\\هتل\\ابلاغیه نواقص هتل.doc"}];
+// Official Word forms. Source blocks are immutable; only blank values are editable.
+const officialNorm = s => s.replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/\s+/g, ' ').trim();
+const officialForms = WORD_FORMS.map((f, n) => {
+  const parts = f.source.split('\\'), file = parts.pop().replace(/\.docx?$/, '');
+  const group = parts.length > 1 ? parts.pop() : 'عمومی';
+  return { ...f, id: 'word-' + n, name: group === 'بیمارستان' ? 'گزارش بیمارستان' : file, group };
+});
+const officialLegacy = { home: viewHome, edit: viewEdit, dash: viewDash, settings: viewSettings, exportRecord, report: renderReport, notice: renderNotice };
+const officialBusy = new Set();
+const officialWrites = new Map();
+function officialSave(i) {
+  const snapshot=clone(i);
+  const prior = officialWrites.get(i.id) || Promise.resolve();
+  const next = prior.catch(() => {}).then(() => DB.put('inspections', snapshot));
+  officialWrites.set(i.id, next);
+  next.then(() => { const e = document.getElementById('save-state'); if(e) e.textContent='ذخیره شد'; }, () => { const e=document.getElementById('save-state'); if(e)e.textContent='ذخیره نشد؛ دوباره تلاش کنید'; });
+  return next;
+}
+function officialLabel(before) { return officialNorm(before).split(/[؛\n]/).pop().slice(-85).replace(/^.*\d+-/, '').trim(); }
+function officialAlias(label) {
+  const s = officialNorm(label);
+  if (/تلفن.*کارفرما/.test(s)) return 'employerPhone';
+  if (/تلفن.*پیمانکار/.test(s)) return 'contractorPhone';
+  if (/تاریخ بازرسی|در تاریخ$|بازرسی مورخ$/.test(s)) return 'date';
+  if (/نام کارگاه|از کارگاه \/ شرکت$|به کارگاه$|کارگاه \/ شرکت\s*:$/.test(s)) return 'name';
+  if (/نشانی/.test(s)) return 'address';
+  if (/نام و نام خانوادگی کارفرما|کارفرمایی آقا\/خانم|مدیریت آقای \/ خانم/.test(s)) return 'employer';
+  if (/کد کارگاه/.test(s)) return 'workshopCode';
+  if (/تلفن کارگاه/.test(s)) return 'phone';
+  if (/وضعیت حقوقی/.test(s)) return 'legalStatus';
+  if (/وضعیت کارگاه/.test(s)) return 'workplaceStatus';
+  if (/فعالیت کارگاه/.test(s)) return 'activity';
+  if (/محصولات تولیدی/.test(s)) return 'products';
+  if (/تعداد کارگران/.test(s)) return 'workerCount';
+  return null;
+}
+function officialCompile(source) {
+  let seq=0, legal=false; const fields=[];
+  function paragraph(b) {
+    const id='p'+seq++, text=b.text.replace(/(مورخ) +\/ +\/1405/g,'$1 {{date}}');
+    if(/^ردیف\s+\d+/.test(officialNorm(text)))legal=true;
+    if(/بازرس/.test(officialNorm(text))&&text.trim().length<80)legal=false;
+    if(legal)return {...b,id,tokens:[text]};
+    const tokens=[]; let last=0, labelStart=0, k=0;
+    // Spaces in prose are retained. Runs used by the paper form for handwriting become fields.
+    const re=/\{\{date\}\}|[ \u00a0]{2,}|\t+|\.{3,}|_{2,}/g; let m;
+    function slot(label) {const alias=officialAlias(label), key=alias || id+'_'+k++; fields.push({key,label,alias});return {key,label,alias};}
+    if(text.includes('\uf00d')){
+      const pieces=text.split(/(_{2,})/);for(const piece of pieces)tokens.push(/^_{2,}$/.test(piece)?slot('تعداد کارگران شاغل'):piece);
+      if(!text.replace(/[\uf00d\s]/g,''))tokens.push(slot('مدرک دیگر'));
+      return {...b,id,tokens};
+    }
+    while((m=re.exec(text))) {
+      const before=text.slice(last,m.index); tokens.push(before);
+      const context=text.slice(0,m.index).trim();
+      if(context && !/دارد\s*$/.test(before) && !/^[\uf020\s:]+$/.test(before) && (m[0].length>=3 || /[:：]\s*$/.test(before) || m[0].includes('\t')) && !/^(بازرس[\/ بازرسانکار]*|نماینده نیروی انتظامی|کارفرما یا نماینده کارفرما|سعید فرزین|شرح وقوع و علت حادثه\s*:)$/.test(officialNorm(context)) && (before.trim() || !tokens.some(x=>typeof x==='object'))) {tokens.push(slot(officialLabel(text.slice(labelStart,m.index))));labelStart=m.index+m[0].length;}
+      else tokens.push(m[0]);
+      last=m.index+m[0].length;
+    }
+    const tail=text.slice(last);tokens.push(tail);
+    if (/[:：]\s*$/.test(tail) && tail.trim() && officialNorm(text).length<170 && !/مشخصات|گزارش|نتیجه بازرسی|نتيجه بازرسي|شرح وقوع|شرح حادثه/.test(tail)) tokens.push(slot(officialLabel(text.slice(labelStart))));
+    return {...b,id,tokens};
+  }
+  function blocks(bs){return bs.flatMap(b=>b.kind==='p'?b.text.split(/\r?\n/).map(text=>paragraph({...b,text})):({...b,rows:b.rows.map(r=>({cells:r.cells.map(c=>({blocks:blocks(c.blocks)}))}))}));}
+  return {blocks:blocks(source.blocks),fields};
+}
+function officialDefaultValues(compiled, wp, date) {
+  const values={};for(const f of compiled.fields)if(f.alias) values[f.key]=f.alias==='date'?date:(wp[f.alias] || '');
+  return values;
+}
+function officialField(i,t,edit) {
+  const value=i.form.values[t.key] || '';
+  const kind=temporalKind(t.label,t.key);
+  if(edit&&kind)return temporalControl(`aria-label="${esc(t.label)}" data-word="${esc(t.key)}"`,value,kind,'word-input');
+  return edit ? `<input class="word-input" aria-label="${esc(t.label)}" title="${esc(t.label)}" placeholder="${esc(t.label || 'تکمیل')}" data-word="${esc(t.key)}" value="${esc(value)}">` : `<span class="word-value">${esc(value || '................')}</span>`;
+}
+function officialBody(i,edit=false) {
+  let resultPlaced=false, clause=null;
+  function blocks(bs){return bs.map(b=>{
+    if(b.kind==='table')return `<div class="word-table-scroll"><table class="word-table">${b.rows.map(r=>`<tr>${r.cells.map(c=>`<td>${blocks(c.blocks)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+    const txt=officialNorm(b.text);
+    if(/^ردیف\s+\d+/.test(txt))clause=b.id;
+    if(clause && /بازرس کار/.test(txt) && txt.length<70)clause=null;
+    const isTitle=/^ردیف\s+\d+/.test(txt);
+    const selected=!clause || !!i.form.selected[clause];
+    if(!edit && !selected)return '';
+    if(!txt)return '';
+    let checkNo=0;
+    let p=b.tokens.map(t=>typeof t==='string'?esc(t).replace(/\uf00d/g,()=>{const key='check_'+b.id+'_'+checkNo++;return edit?`<input type="checkbox" aria-label="انتخاب مدرک" data-document-check="${key}" ${i.form.values[key]==='yes'?'checked':''}>`:(i.form.values[key]==='yes'?'☑':'☐')}):officialField(i,t,edit)).join('');
+    p=p.replace(/سعيد فرزين/g,esc(i.form.profile.name));
+    if(isTitle && edit)p=`<label class="word-choice"><input type="checkbox" data-clause="${b.id}" ${selected?'checked':''}>${p}</label>`;
+    let result='';
+    if(!resultPlaced && /^(نتیجه بازرسی\s*:|شرح وقوع و علت حادثه\s*:)/.test(txt)){
+      resultPlaced=true; if(!i.form.hasClauses)result=edit?`<textarea class="word-result" aria-label="نتیجه و شرح" data-word="result" placeholder="نتیجه و شرح را بنویسید">${esc(i.form.values.result || '')}</textarea>`:`<div class="word-prose">${esc(i.form.values.result || '')}</div>`;
+    }
+    return `<div class="word-paragraph ${clause&&!selected?'word-muted':''}">${p}</div>${result}`;
+  }).join('');}
+  let html=blocks(i.form.document.blocks);
+  if(!resultPlaced && !i.form.hasClauses)html+=edit?`<label class="fld">شرح / موارد<div><textarea class="word-result" data-word="result">${esc(i.form.values.result||'')}</textarea></div></label>`:`<div class="word-prose">${esc(i.form.values.result||'')}</div>`;
+  if(edit && i.form.hasClauses){
+    const box=document.createElement('div');box.innerHTML=html;
+    for(const choice of [...box.querySelectorAll('.word-choice')]){
+      const title=choice.parentElement, details=document.createElement('details'), summary=document.createElement('summary');summary.textContent='نمایش متن کامل ماده';details.appendChild(summary);
+      let next=title.nextElementSibling;
+      while(next&&!next.querySelector('.word-choice')&&!(/بازرس/.test(next.textContent)&&next.textContent.trim().length<80)) {const after=next.nextElementSibling;details.appendChild(next);next=after;}
+      title.after(details);
+    }
+    html=box.innerHTML;
+  }
+  return html;
+}
+function officialReceipt(i) {
+  const d=i.delivery;if(!d?.signature)return '';
+  return `<section class="word-receipt"><h2>رسید ابلاغ در محل</h2><p>فرم ${esc(i.type.name)} به شماره ${esc(serialOf(i))} در تاریخ ${esc(d.date)} ساعت ${esc(d.time)} به ${esc(d.name)} (${esc(d.role)}) ارائه و دریافت آن با امضای زیر ثبت شد.</p><img src="${d.signature}" alt="امضای گیرنده"></section>`;
+}
+function officialPrint(i) {
+  const p=i.form.profile;
+  return `<article class="p-doc word-document">${officialHeading(i)}${officialBody(i)}<div class="p-sign">${esc(p.name)}<br>${esc(p.title)}${i.form.signature?`<img style="max-width:160px;max-height:80px" src="${i.form.signature}">`:''}</div>${(i.form.signers||[]).map(s=>`<div class="p-sign">${esc(s.role)}: ${esc(s.name)}<br><img style="max-width:160px;max-height:80px" src="${s.signature}"></div>`).join('')}${officialReceipt(i)}</article>`;
+}
+function officialHeading(i){
+  const logo=i.status==='final'&&Object.hasOwn(i.form,'logo')?i.form.logo:S.settings.logo;
+  const subjects={'ساختمانی':'گزارش بازرسی کارگاه ساختمانی','فرم حادثه':'گزارش بررسی حادثه','گزارش بیمارستان':'گزارش بازرسی بیمارستان'};
+  const subject=subjects[i.type.name]||i.type.name.replace(/^فرم /,'');
+  return formHeading(i.date,serialOf(i),logo)+`<div class="form-subject">موضوع: ${esc(subject)}</div>`;
+}
+renderReport = function(i){return i.form ? officialPrint(i) : officialLegacy.report(i)};
+renderNotice = function(i){return i.form ? officialPrint(i) : officialLegacy.notice(i)};
+exportRecord = function(i,photos){return {...officialLegacy.exportRecord(i,photos),...(i.form?{form:clone(i.form),issuedHtml:i.issuedHtml,receipt:i.delivery}: {})}};
+viewHome = function(){
+  const q=officialNorm(S.q), list=S.inspections.filter(i=>!q||officialNorm([i.type.name,i.workplace.name,i.serial].join(' ')).includes(q));
+  return `<div class="row-between"><h2>فرم‌های من</h2><button class="btn primary" data-act="go" data-v="new">+ تکمیل فرم</button></div><p class="hint">انتخاب فرم ← تکمیل ← ابلاغ و خروجی</p><input class="search" placeholder="نام کارگاه، فرم یا شماره" data-official-search value="${esc(S.q)}"><div id="official-list">${officialList(list)}</div>`;
+};
+function officialList(list){return list.map(i=>`<button class="card list-item" data-act="open" data-id="${i.id}"><div class="row-between"><b>${esc(i.workplace.name||i.type.name)}</b><span class="badge">${i.delivery?.signature?'ابلاغ‌شده':i.status==='final'?'نهایی':'پیش‌نویس'}</span></div><div>${esc(i.type.name)} · ${esc(faDigits(i.date))}</div><small>${esc(serialOf(i))}</small></button>`).join('')||'<div class="empty">برای شروع «تکمیل فرم» را بزنید.</div>';}
+viewNew = function(){return `<h2>کدام فرم را تکمیل می‌کنید؟</h2><div class="card"><label class="fld">کارگاه<select id="official-workplace"><option value="">کارگاه جدید</option>${S.workplaces.map(w=>`<option value="${w.id}" ${S.params.wpId===w.id?'selected':''}>${esc(w.name)}</option>`).join('')}</select></label></div>${[...new Set(officialForms.map(f=>f.group))].map(g=>`<h3>${esc(g)}</h3><div class="official-cards">${officialForms.filter(f=>f.group===g).map(f=>`<button class="card" data-act="officialCreate" data-id="${f.id}">${esc(f.name)}</button>`).join('')}</div>`).join('')}`};
+viewEdit = function(){
+  const i=curInsp();if(!i?.form)return officialLegacy.edit();
+  const final=i.status==='final', preview=S.params.preview||final;
+  return `<div class="row-between"><h2>${esc(i.type.name)}</h2><span id="save-state" role="status">${final?'نهایی':'ذخیره خودکار'}</span></div>
+  ${preview?`<div class="card word-preview">${officialPrint(i)}</div>`:`<div class="card"><div class="grid">${field('نام کارگاه (برای بایگانی و مراجعه بعدی)','data-official-meta="name"',i.workplace.name)}${field('تاریخ','data-official-meta="date"',i.date,'digits')}</div><p class="hint">جاهای خالی همان فرم را تکمیل کنید.${i.form.hasClauses?' فقط بندهای قابل درج را علامت بزنید؛ متن و شماره اصلی بندها حفظ می‌شود.':''}</p></div><div class="card word-document">${officialHeading(i)}${officialBody(i,true)}</div>`}
+  <div class="official-bar">${preview&&!final?'<button class="btn" data-act="officialEdit">ویرایش</button>':''}${!preview?'<button class="btn primary" data-act="officialPreview">نمایش فرم تکمیل‌شده</button>':''}${preview&&!final?'<button class="btn primary" data-act="officialDeliver">ابلاغ و امضای گیرنده</button><button class="btn" data-act="officialFinalize">ثبت بدون ابلاغ</button>':''}${final?'<button class="btn primary" data-act="officialPrint">چاپ / ذخیره PDF</button><button class="btn" data-act="officialRelated">فرم بعدی همین کارگاه</button><button class="btn" data-act="officialRevise">نسخه اصلاحی</button>':''}</div>
+  ${!final?'<details class="card"><summary>امضای سایر حاضران / حذف پیش‌نویس</summary><button class="btn" data-act="officialSigner">افزودن امضاکننده</button><button class="btn danger" data-act="officialDelete">حذف پیش‌نویس</button></details>':''}`;
+};
+viewDash = function(){const list=S.inspections.filter(i=>i.status==='final');return `<h2>گزارش فعالیت</h2><div class="tiles"><div class="tile"><b>${faDigits(list.length)}</b>فرم نهایی</div><div class="tile"><b>${faDigits(list.filter(i=>i.delivery?.signature).length)}</b>ابلاغ در محل</div><div class="tile"><b>${faDigits(S.inspections.filter(i=>i.status!=='final').length)}</b>پیش‌نویس</div></div>${officialList(list)}`};
+viewSettings = function(){return officialLegacy.settings().replace(/<div class="card"><h3>چک‌لیست‌ها<\/h3>[\s\S]*?<\/div>\s*<\/div>/,'<div class="card">فرم‌های مرجع ورد در برنامه قرار دارند. اطلاعات فرم‌ها و رسید ابلاغ در فایل پشتیبان ذخیره می‌شود.</div>')};
+ACT.officialCreate=async el=>{
+  if(officialBusy.has('create'))return;officialBusy.add('create');
+  try{
+    if(!S.settings.profile.code||!S.settings.profile.name){await modal('مشخصات بازرس','ابتدا نام و کد بازرس را یک‌بار وارد کنید.');return go('settings');}
+    const f=officialForms.find(x=>x.id===el.dataset.id), wp=clone(S.workplaces.find(w=>w.id===document.getElementById('official-workplace')?.value)||{}), doc=officialCompile(f), date=Jalali.today();
+    const i={id:uid(),serial:nextSerial(),rev:0,status:'draft',date,createdAt:new Date().toISOString(),type:{id:f.id,name:f.name,kind:'official',sections:[]},workplace:{...wp,wpId:wp.id||uid()},answers:{},photos:[],history:[],conclusion:'',accident:null,
+      form:{version:1,source:f.source,document:doc,values:officialDefaultValues(doc,wp,date),selected:{},hasClauses:JSON.stringify(f.blocks).includes('رديف 1'),profile:clone(S.settings.profile),signature:S.settings.signature,signers:[]}};
+    clearTimeout(timers.settings);delete timers.settings;delete timers['settings:fn'];
+    await DB.batch([['kv',S.settings],['inspections',i]]);S.inspections.unshift(i);go('edit',{id:i.id});
+  }catch(e){await modal('ذخیره انجام نشد',esc(e.message));}finally{officialBusy.delete('create');}
+};
+const officialCreateUnlocked=ACT.officialCreate;
+ACT.officialCreate=async el=>{
+  const create=async()=>{const saved=await DB.get('kv','settings');for(const [year,n] of Object.entries(saved?.seq||{}))S.settings.seq[year]=Math.max(S.settings.seq[year]||0,n);return officialCreateUnlocked(el);};
+  return navigator.locks?.request?navigator.locks.request('inspection-form-create',create):create();
+};
+function officialInvalidate(i){i.delivery=null;i.form.signers=[];i.issuedHtml=null;}
+function officialProblems(i){const errors=[];if(!i.workplace.name.trim())errors.push('نام کارگاه را وارد کنید.');if(!Jalali.valid(i.date))errors.push('تاریخ معتبر وارد کنید.');if(i.form.hasClauses&&!Object.values(i.form.selected).some(Boolean))errors.push('حداقل یک بند قابل درج را انتخاب کنید.');return errors;}
+ACT.officialPreview=async()=>{const i=curInsp();await officialSave(i);S.params.preview=true;render();window.scrollTo(0,0)};
+ACT.officialEdit=()=>{S.params.preview=false;render()};
+async function officialFinish(i,delivery){
+  const errors=officialProblems(i);if(errors.length){await modal('تکمیل فرم',errors.map(esc).join('<br>'));return false;}
+  const candidate=clone(i);candidate.form.logo=S.settings.logo;candidate.delivery=delivery;candidate.status='final';candidate.finalizedAt=new Date().toISOString();
+  try{await (officialWrites.get(i.id)||Promise.resolve()).catch(()=>{});const w={...i.workplace,id:i.workplace.wpId};await DB.batch([['inspections',candidate],['workplaces',w]]);Object.assign(i,candidate);const ix=S.workplaces.findIndex(x=>x.id===w.id);if(ix<0)S.workplaces.push(w);else S.workplaces[ix]=w;S.params.preview=true;render();return true;}catch(e){await modal('ذخیره انجام نشد','فرم نهایی نشد. دوباره تلاش کنید.');return false;}
+}
+ACT.officialFinalize=async()=>{const i=curInsp();if(officialBusy.has(i.id))return;officialBusy.add(i.id);try{if(await confirmBox('ثبت نهایی','فرم نمایش‌داده‌شده بدون رسید ابلاغ ثبت شود؟','ثبت نهایی'))await officialFinish(i,null)}finally{officialBusy.delete(i.id)}};
+ACT.officialDeliver=async()=>{
+  const i=curInsp();if(officialBusy.has(i.id))return;const errors=officialProblems(i);if(errors.length)return modal('تکمیل فرم',errors.map(esc).join('<br>'));
+  officialBusy.add(i.id);try{
+    S.officialRecipient={name:i.workplace.employer||'',role:'کارفرما',date:Jalali.today(),time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})};
+    if(!await modal('ابلاغ در محل','<p>فرم کامل بالا را به گیرنده نشان دهید؛ سپس نام و سمت او را ثبت و امضا دریافت کنید.</p>'+field('نام گیرنده','data-recipient="name"',S.officialRecipient.name)+field('سمت','data-recipient="role"','کارفرما')+field('تاریخ ابلاغ','data-recipient="date"',S.officialRecipient.date)+field('ساعت ابلاغ','data-recipient="time"',S.officialRecipient.time),[['انصراف',false],['دریافت امضا',true]]))return;
+    if(!S.officialRecipient.name.trim()||!S.officialRecipient.role.trim())return modal('اطلاعات ناقص','نام و سمت گیرنده لازم است.');
+    if(!Jalali.valid(S.officialRecipient.date)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(S.officialRecipient.time))return modal('اطلاعات ناقص','تاریخ و ساعت ابلاغ را انتخاب کنید.');
+    const sig=await signFullscreen('دریافت فرم — '+S.officialRecipient.name);if(!sig)return;
+    await officialFinish(i,{...S.officialRecipient,signature:sig});
+  }finally{officialBusy.delete(i.id)}
+};
+ACT.officialPrint=()=>{const i=curInsp();return printDoc(officialPrint(i),i.type.name+'-'+serialOf(i))};
+ACT.officialRelated=()=>go('new',{wpId:curInsp().workplace.wpId});
+ACT.officialRevise=async()=>{const i=curInsp();if(!await confirmBox('نسخه اصلاحی','نسخه امضاشده حفظ می‌شود و یک نسخه قابل ویرایش ساخته می‌شود.','ایجاد نسخه'))return;const next=clone(i);next.id=uid();next.rev=Math.max(...S.inspections.filter(x=>x.serial===i.serial).map(x=>x.rev||0))+1;next.status='draft';next.createdAt=new Date().toISOString();next.parentId=i.id;delete next.finalizedAt;officialInvalidate(next);await officialSave(next);S.inspections.unshift(next);go('edit',{id:next.id})};
+ACT.officialDelete=async()=>{const i=curInsp();if(i.status==='final'||!await confirmBox('حذف پیش‌نویس','این پیش‌نویس حذف شود؟','حذف'))return;await officialWrites.get(i.id);await DB.del('inspections',i.id);S.inspections=S.inspections.filter(x=>x.id!==i.id);go('home')};
+ACT.officialSigner=async()=>{const i=curInsp();S.officialRecipient={name:'',role:''};if(!await modal('امضاکننده دیگر',field('نام','data-recipient="name"','')+field('سمت (بازرس / نماینده انتظامی / …)','data-recipient="role"',''),[['انصراف',false],['امضا',true]]))return;if(!S.officialRecipient.name.trim()||!S.officialRecipient.role.trim())return modal('اطلاعات ناقص','نام و سمت را وارد کنید.');const sig=await signFullscreen(S.officialRecipient.name);if(sig){i.form.signers.push({...S.officialRecipient,signature:sig});await officialSave(i);render()}};
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.recipient){S.officialRecipient[el.dataset.recipient]=el.value;return;}
+  if(el.hasAttribute('data-official-search')){S.q=el.value;const q=officialNorm(S.q);document.getElementById('official-list').innerHTML=officialList(S.inspections.filter(i=>officialNorm([i.type.name,i.workplace.name,i.serial].join(' ')).includes(q)));return;}
+  const i=curInsp();if(!i?.form||i.status==='final')return;
+  if(el.dataset.word){officialInvalidate(i);i.form.values[el.dataset.word]=el.value;const alias=i.form.document.fields.find(f=>f.key===el.dataset.word)?.alias;if(alias){if(alias==='date')i.date=enDigits(el.value);else i.workplace[alias]=el.value;}officialSave(i);}
+  if(el.dataset.officialMeta){officialInvalidate(i);if(el.dataset.officialMeta==='date'){i.date=enDigits(el.value);i.form.values.date=i.date;}else {i.workplace.name=el.value;i.form.values.name=el.value;}officialSave(i);}
+});
+document.addEventListener('change',e=>{const el=e.target,i=curInsp();if(!i?.form||i.status==='final')return;if(el.dataset.clause){officialInvalidate(i);i.form.selected[el.dataset.clause]=el.checked;officialSave(i);}if(el.dataset.documentCheck){officialInvalidate(i);i.form.values[el.dataset.documentCheck]=el.checked?'yes':'';officialSave(i);}});
+
+
+;
+// Inspector work queue and performance reports. A document family counts once.
+function inspectorWorkplaceKey(i) {
+  const w=i.workplace||{};
+  return w.wpId||w.workshopCode||((w.name||'').trim()?officialNorm([w.name,w.address||''].join('|')):i.id);
+}
+function inspectorFamilies(records=S.inspections) {
+  const groups=new Map();
+  for(const i of records){const key=i.serial||i.id;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(i);}
+  return [...groups.values()].map(items=>{
+    items.sort((a,b)=>(b.rev||0)-(a.rev||0)||(b.createdAt||'').localeCompare(a.createdAt||''));
+    return {items,latest:items[0],final:items.find(i=>i.status==='final'),draft:items[0].status==='draft'?items[0]:null,root:items[items.length-1]};
+  });
+}
+function inspectorRange() {
+  const today=Jalali.today(), period=S.inspectorPeriod||'month';
+  const from=period==='today'?today:period==='custom'?Jalali.norm(S.inspectorFrom):today.slice(0,7)+'/01';
+  const to=period==='custom'?Jalali.norm(S.inspectorTo):today;
+  return {period,from,to,valid:!!from&&!!to&&from<=to};
+}
+function inspectorDashboardData() {
+  const range=inspectorRange(),today=Jalali.today(),families=inspectorFamilies();
+  const finals=families.map(f=>f.final).filter(i=>i&&range.valid&&Jalali.norm(i.date)>=range.from&&Jalali.norm(i.date)<=range.to);
+  const drafts=families.filter(f=>f.draft).map(f=>f.draft);
+  const pending=families.filter(f=>f.root.followupTask?.enabled&&!f.root.followupTask.completedAt).map(f=>({family:f,record:f.final||f.latest,task:f.root.followupTask})).sort((a,b)=>a.task.due.localeCompare(b.task.due));
+  const byType=new Map(),workplaces=new Map();
+  for(const i of finals){byType.set(i.type.name,(byType.get(i.type.name)||0)+1);const k=inspectorWorkplaceKey(i);if(!workplaces.has(k))workplaces.set(k,{record:i,count:0});workplaces.get(k).count++;}
+  return {range,today,families,finals,drafts,pending,byType,workplaces,delivered:finals.filter(i=>i.delivery?.signature).length,overdue:pending.filter(x=>x.task.due<today),dueToday:pending.filter(x=>x.task.due===today),upcoming:pending.filter(x=>x.task.due>today)};
+}
+function inspectorTaskPanel(i) {
+  const root=inspectorFamilies().find(f=>f.items.some(x=>x.id===i.id))?.root||i,t=root.followupTask;
+  return `<section class="card inspector-task"><div class="row-between"><h3>پیگیری این فرم</h3><button class="btn sm" data-act="inspectorTaskEdit" data-id="${i.id}">${t?.enabled?'ویرایش پیگیری':'ثبت پیگیری'}</button></div><p class="hint">اختیاری؛ برای یادآوری اقدام بعدی، خارج از متن و امضای فرم.</p>${t?.enabled?`<p>${esc(t.note||'پیگیری فرم')} — ${faDigits(t.due)}${t.completedAt?' — انجام‌شده':''}</p><button class="btn sm" data-act="inspectorTaskToggle" data-id="${i.id}">${t.completedAt?'بازگشایی پیگیری':'انجام شد'}</button>`:''}</section>`;
+}
+const inspectorEditBase=viewEdit;
+viewEdit=function(){const i=curInsp();return inspectorEditBase()+(i?inspectorTaskPanel(i):'');};
+const inspectorWorkplaceEditBase=viewWpEdit;
+viewWpEdit=function(){const w=S.params.wp;return inspectorWorkplaceEditBase()+(w?.id?`<section class="card"><button class="btn" data-act="inspectorHistoryKey" data-key="${esc(w.id)}">سوابق فرم‌ها و ابلاغ‌های این کارگاه</button></section>`:'');};
+function inspectorTaskRows(rows) {
+  return rows.map(({record:i,task:t})=>`<div class="inspector-action-row"><div><b>${esc(i.workplace.name||'بدون نام')}</b><div>${esc(t.note||i.type.name)}</div><small>موعد: ${faDigits(t.due)} · ${esc(serialOf(i))}</small></div><div class="actions"><button class="btn sm" data-act="open" data-id="${i.id}">مشاهده فرم</button><button class="btn sm" data-act="inspectorHistory" data-id="${i.id}">سوابق کارگاه</button><button class="btn sm" data-act="inspectorTaskToggle" data-id="${i.id}">انجام شد</button></div></div>`).join('');
+}
+function inspectorWorkplaceHistory(key) {
+  const records=S.inspections.filter(i=>inspectorWorkplaceKey(i)===key).sort((a,b)=>(Jalali.norm(b.date)||'').localeCompare(Jalali.norm(a.date)||'')||(b.rev||0)-(a.rev||0));
+  const latest=records[0];
+  return `<button class="btn" data-act="inspectorDashboard">بازگشت به داشبورد</button><h2>سوابق ${esc(latest?.workplace.name||'کارگاه')}</h2><p class="hint">فرم‌ها و نسخه‌های اصلاحی به ترتیب تاریخ؛ با انتخاب هر فرم، متن و رسید آن نمایش داده می‌شود.</p>${latest?`<button class="btn primary" data-act="inspectorNewForWorkplace" data-id="${latest.id}">فرم جدید برای این کارگاه</button>`:''}${officialList(records)}`;
+}
+viewDash=function(){
+  if(S.params.workplace)return inspectorWorkplaceHistory(S.params.workplace);
+  const d=inspectorDashboardData(),r=d.range;
+  const tile=(n,l)=>`<div class="tile"><b>${faDigits(n)}</b><span>${l}</span></div>`;
+  const last=S.settings.lastBackup;
+  const backupDate=last&&Number.isFinite(new Date(last).getTime())?Jalali.fromDate(new Date(last)):'';
+  return `<div class="row-between"><h2>داشبورد من</h2><button class="btn primary" data-act="go" data-v="new">+ تکمیل فرم</button></div>
+    <section class="card"><div class="inspector-filters"><label class="fld">دوره عملکرد<select data-inspector-period><option value="today" ${r.period==='today'?'selected':''}>امروز</option><option value="month" ${r.period==='month'?'selected':''}>ماه جاری</option><option value="custom" ${r.period==='custom'?'selected':''}>بازه دلخواه</option></select></label>${r.period==='custom'?field('از تاریخ','data-inspector-date="from"',S.inspectorFrom)+field('تا تاریخ','data-inspector-date="to"',S.inspectorTo):''}<button class="btn" data-act="inspectorPrint" ${r.valid?'':'disabled'}>چاپ گزارش عملکرد</button></div>${!r.valid?'<p class="banner err">تاریخ شروع و پایان را به ترتیب صحیح انتخاب کنید.</p>':`<p class="hint">عملکرد از ${faDigits(r.from)} تا ${faDigits(r.to)}؛ هر فرم با آخرین نسخه نهایی، یک‌بار شمرده می‌شود.</p>`}</section>
+    <div class="tiles">${tile(d.drafts.length,'پیش‌نویس باز')}${tile(d.overdue.length,'پیگیری سررسیدگذشته')}${tile(d.finals.length,'فرم نهایی در دوره')}${tile(d.delivered,'ابلاغ دارای امضا در دوره')}${tile(d.workplaces.size,'کارگاه یکتا در دوره')}</div>
+    <section class="card"><h3>کارهای نیازمند اقدام</h3><p class="hint">کارهای باز مربوط به همه دوره‌ها هستند.</p><h4>پیش‌نویس‌ها (${faDigits(d.drafts.length)})</h4>${d.drafts.length?officialList(d.drafts):'<p class="hint">پیش‌نویس بازی ندارید.</p>'}${[['سررسیدگذشته',d.overdue],['موعد امروز',d.dueToday],['موعدهای آینده',d.upcoming]].map(([name,rows])=>`<details ${rows.length?'open':''}><summary>${name} (${faDigits(rows.length)})</summary>${rows.length?inspectorTaskRows(rows):'<p class="hint">موردی ثبت نشده است.</p>'}</details>`).join('')}</section>
+    <section class="card"><h3>عملکرد به تفکیک فرم</h3>${d.byType.size?`<table class="mini"><thead><tr><th>نوع فرم</th><th>تعداد</th></tr></thead><tbody>${[...d.byType].map(([name,n])=>`<tr><td>${esc(name)}</td><td>${faDigits(n)}</td></tr>`).join('')}</tbody></table>`:'<p class="hint">در این دوره فرم نهایی ثبت نشده است.</p>'}<p class="hint">تعداد فرم، تعداد بازدید نیست؛ در یک بازدید ممکن است چند فرم تکمیل شود.</p></section>
+    <section class="card"><h3>کارگاه‌های دوره و سوابق</h3>${[...d.workplaces.values()].map(({record:i,count})=>`<div class="inspector-action-row"><div><b>${esc(i.workplace.name||'بدون نام')}</b> · ${faDigits(count)} فرم</div><button class="btn sm" data-act="inspectorHistory" data-id="${i.id}">سوابق کارگاه</button></div>`).join('')||'<p class="hint">کارگاهی در این دوره ثبت نشده است.</p>'}</section>
+    <section class="card"><div class="row-between"><div><h3>پشتیبان اطلاعات</h3><p>${backupDate?'آخرین پشتیبان: '+faDigits(backupDate):'هنوز پشتیبان گرفته نشده است.'}</p></div><button class="btn" data-act="backup">دریافت پشتیبان</button></div>${!backupDate||(Date.now()-new Date(last).getTime())/864e5>BACKUP_DAYS?'<p class="hint">یک نسخه پشتیبان تازه خارج از دستگاه نگه دارید.</p>':''}</section>`;
+};
+function inspectorReport() {
+  const d=inspectorDashboardData();if(!d.range.valid)return '';
+  const name=S.settings.profile.name;
+  return `<article class="p-doc">${formHeading(Jalali.today(),'—',S.settings.logo)}<h1>گزارش عملکرد بازرس</h1><p>بازرس: ${esc(name)} — کد: ${esc(faDigits(S.settings.profile.code))}</p><p>دوره: ${faDigits(d.range.from)} تا ${faDigits(d.range.to)}</p><p>فرم نهایی: ${faDigits(d.finals.length)} | ابلاغ دارای امضا: ${faDigits(d.delivered)} | کارگاه یکتا: ${faDigits(d.workplaces.size)}</p><h2>به تفکیک فرم</h2><table class="p-tbl"><thead><tr><th>نوع فرم</th><th>تعداد</th></tr></thead><tbody>${[...d.byType].map(([t,n])=>`<tr><td>${esc(t)}</td><td>${faDigits(n)}</td></tr>`).join('')||'<tr><td colspan="2">موردی ثبت نشده است.</td></tr>'}</tbody></table><h2>فهرست فعالیت‌ها</h2><table class="p-tbl"><thead><tr><th>تاریخ</th><th>کارگاه</th><th>نوع فرم</th><th>شماره</th><th>ابلاغ دارای امضا</th></tr></thead><tbody>${d.finals.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(i=>`<tr><td>${faDigits(i.date)}</td><td>${esc(i.workplace.name)}</td><td>${esc(i.type.name)}</td><td>${esc(serialOf(i))}</td><td>${i.delivery?.signature?'بله':'خیر'}</td></tr>`).join('')}</tbody></table><p>هر فرم با آخرین نسخه نهایی یک‌بار شمرده شده است؛ این آمار تعداد بازدید نیست.</p><h2>وضعیت فعلی کارهای باز (همه دوره‌ها)</h2><p>پیش‌نویس: ${faDigits(d.drafts.length)} | پیگیری سررسیدگذشته: ${faDigits(d.overdue.length)} | موعد امروز: ${faDigits(d.dueToday.length)}</p>${signature({date:Jalali.today()})}</article>`;
+}
+ACT.inspectorPrint=()=>printDoc(inspectorReport(),'گزارش-عملکرد-'+Jalali.today().replaceAll('/','-'));
+ACT.inspectorDashboard=()=>go('dash');
+ACT.inspectorHistory=el=>{const i=S.inspections.find(x=>x.id===el.dataset.id);if(i)go('dash',{workplace:inspectorWorkplaceKey(i)});};
+ACT.inspectorHistoryKey=el=>go('dash',{workplace:el.dataset.key});
+ACT.inspectorNewForWorkplace=el=>{const i=S.inspections.find(x=>x.id===el.dataset.id);if(i)go('new',{wpId:i.workplace.wpId});};
+ACT.inspectorTaskEdit=async el=>{
+  const f=inspectorFamilies().find(f=>f.items.some(x=>x.id===el.dataset.id));if(!f)return;
+  const old=f.root.followupTask||{};S.inspectorTaskDraft={enabled:old.enabled??true,due:old.due||Jalali.today(),note:old.note||''};
+  if(!await modal('پیگیری فرم',`<label class="chk"><input type="checkbox" data-task-enabled ${S.inspectorTaskDraft.enabled?'checked':''}>نیاز به پیگیری دارد</label>${field('تاریخ پیگیری','data-task-value="due"',S.inspectorTaskDraft.due)}${field('اقدام بعدی (اختیاری)','data-task-value="note"',S.inspectorTaskDraft.note)}`,[['انصراف',false],['ذخیره',true]]))return;
+  const task=S.inspectorTaskDraft;if(task.enabled&&!Jalali.valid(task.due))return modal('تاریخ نامعتبر','تاریخ پیگیری را انتخاب کنید.');
+  const candidate=clone(f.root);candidate.followupTask={...old,...task,due:Jalali.norm(task.due),updatedAt:new Date().toISOString()};
+  if(!old.enabled&&task.enabled)delete candidate.followupTask.completedAt;
+  try{await (officialWrites.get(f.root.id)||Promise.resolve()).catch(()=>{});await DB.put('inspections',candidate);Object.assign(f.root,candidate);render();toast('پیگیری ذخیره شد');}catch(e){await modal('ذخیره انجام نشد','دوباره تلاش کنید.');}
+};
+ACT.inspectorTaskToggle=async el=>{
+  const f=inspectorFamilies().find(f=>f.items.some(x=>x.id===el.dataset.id));if(!f?.root.followupTask?.enabled)return;
+  const candidate=clone(f.root);candidate.followupTask.completedAt=candidate.followupTask.completedAt?null:new Date().toISOString();
+  try{await (officialWrites.get(f.root.id)||Promise.resolve()).catch(()=>{});await DB.put('inspections',candidate);Object.assign(f.root,candidate);render();}catch(e){await modal('ذخیره انجام نشد','دوباره تلاش کنید.');}
+};
+const inspectorExportRecord=exportRecord;
+exportRecord=function(i,photos){return {...inspectorExportRecord(i,photos),followupTask:i.followupTask||null};};
+document.addEventListener('change',e=>{
+  if(e.target.hasAttribute('data-inspector-period')){S.inspectorPeriod=e.target.value;S.inspectorFrom||=Jalali.today().slice(0,7)+'/01';S.inspectorTo||=Jalali.today();render();}
+  if(e.target.hasAttribute('data-task-enabled')&&S.inspectorTaskDraft)S.inspectorTaskDraft.enabled=e.target.checked;
+});
+document.addEventListener('input',e=>{
+  if(e.target.dataset.inspectorDate){S[e.target.dataset.inspectorDate==='from'?'inspectorFrom':'inspectorTo']=e.target.value;render();}
+  if(e.target.dataset.taskValue&&S.inspectorTaskDraft)S.inspectorTaskDraft[e.target.dataset.taskValue]=e.target.value;
+});
 </script>
 </body>
 </html>
