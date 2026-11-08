@@ -1288,7 +1288,7 @@ function renderDashPrint() {
 
 ;
 // ---------- Constants ----------
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.0.1';
 const RISKS = [['L', 'کم'], ['M', 'متوسط'], ['H', 'زیاد'], ['X', 'خطر قریب‌الوقوع']];
 const RISK_LABEL = Object.fromEntries(RISKS);
 const KIND_LABEL = { routine: 'موردی', accident: 'حادثه', followup: 'پیگیری' };
@@ -1450,7 +1450,7 @@ function render() {
       <div class="brand">چک‌لیست بازرسی کار</div>
       <nav aria-label="بخش‌های سامانه">${nav.map(([v, l]) => `<button class="nav-b ${active === v ? 'on' : ''}" ${active === v ? 'aria-current="page"' : ''} data-act="go" data-v="${v}">${l}</button>`).join('')}</nav>
     </div></header>
-    <main class="wrap">${views[S.view]()}</main>
+    <main class="wrap">${S.updateReady?'<div class="banner">نسخه جدید آماده است. <button class="btn" data-act="reloadApp">ذخیره و بازخوانی نسخه جدید</button></div>':''}${views[S.view]()}</main>
     <footer class="app-credit">طراحی و توسعه توسط گروه آمار، بودجه و تحول اداری اداره کل تعاون، کار و رفاه اجتماعی استان تهران</footer>`;
   afterRender();
 }
@@ -1876,6 +1876,7 @@ function installCard() {
   else if (isFile) install = '<p class="hint">نسخه فایل قابل نصب نیست. برای نصب، نسخه وب برنامه را با Chrome باز کنید و از منوی ⋮ گزینه «Install app / افزودن به صفحه اصلی» را بزنید.</p>';
   else install = '<p class="hint">از منوی ⋮ در Chrome گزینه «Install app» یا «Add to Home screen» را بزنید.</p>';
   return `<div class="card"><h3>نصب و ذخیره‌سازی</h3>${install}
+    ${isFile?'':'<button class="btn" data-act="checkUpdate">بررسی و دریافت به‌روزرسانی</button>'}
     <p class="hint">محل ذخیره اطلاعات: ${storage}<i class="sep"></i>ذخیره‌سازی ماندگار: ${S.persisted ? 'فعال (مرورگر اطلاعات را خودکار پاک نمی‌کند)' : 'غیرفعال (با کمبود فضای گوشی ممکن است پاک شود؛ پشتیبان بگیرید)'}</p></div>`;
 }
 
@@ -2199,8 +2200,26 @@ document.addEventListener('change', e => { if (e.target.tagName === 'SELECT') on
 document.addEventListener('visibilitychange', () => { if (document.hidden) flushAll(); });
 window.addEventListener('pagehide', flushAll);
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); S.installPrompt = e; if (S.view === 'settings') render(); });
-if ('serviceWorker' in navigator && location.protocol.startsWith('http') && document.querySelector('link[rel=manifest]'))
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator && location.protocol.startsWith('http') && document.querySelector('link[rel=manifest]')) {
+  let hadController=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadController){hadController=true;return;}S.updateReady=true;if(S.settings)render();});
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+}
+ACT.reloadApp=async()=>{
+  try{flushAll();if(typeof officialWrites!=='undefined')await Promise.all(officialWrites.values());await DB.put('kv',S.settings);location.reload();}
+  catch(e){await modal('بازخوانی انجام نشد','ابتدا مشکل ذخیره اطلاعات را رفع کنید.');}
+};
+ACT.checkUpdate=async()=>{
+  if(!navigator.onLine)return modal('اتصال برقرار نیست','برای دریافت نسخه جدید، اینترنت را وصل کنید.');
+  try{
+    const response=await fetch('index.html?update='+Date.now(),{cache:'no-store'});if(!response.ok)throw new Error('unavailable');
+    const html=await response.text();if(!html.includes('<div id="app">'))throw new Error('invalid app');
+    const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();
+    // Refresh the active cache too, so the current worker can serve the new app immediately.
+    for(const key of await caches.keys())if(key.startsWith('inspection-checklist-')){const c=await caches.open(key);await c.put(new URL('./index.html',location.href).href,new Response(html,{headers:{'Content-Type':'text/html; charset=utf-8'}}));}
+    S.updateReady=true;render();toast('نسخه تازه دریافت شد؛ بازخوانی را بزنید');
+  }catch(e){await modal('دریافت انجام نشد','اتصال اینترنت را بررسی و دوباره تلاش کنید.');}
+};
 
 // ---------- Boot ----------
 (async function boot() {
