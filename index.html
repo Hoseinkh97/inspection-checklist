@@ -2289,6 +2289,19 @@ function officialField(i,t,edit) {
   if(edit&&kind)return temporalControl(`aria-label="${esc(t.label)}" data-word="${esc(t.key)}"`,value,kind,'word-input');
   return edit ? `<input class="word-input" aria-label="${esc(t.label)}" title="${esc(t.label)}" placeholder="${esc(t.label || 'تکمیل')}" data-word="${esc(t.key)}" value="${esc(value)}">` : `<span class="word-value">${esc(value || '................')}</span>`;
 }
+function officialUnitTokens(i,tokens) {
+  let previousField=null;
+  return tokens.map(t=>{
+    if(typeof t!=='string'){previousField=t;return t;}
+    let text=t;
+    if(previousField && /مدت|مهلت/.test(officialNorm(previousField.label))) {
+      const valueHasDay=/روز\s*$/.test(i.form.values[previousField.key]||'');
+      text=text.replace(/^\s*(?:روز\s+)?(ادار[یي])(?=\s|$)/,(_,unit)=>valueHasDay?' '+unit:' روز '+unit);
+    }
+    if(text.trim())previousField=null;
+    return text;
+  });
+}
 function officialBody(i,edit=false) {
   let resultPlaced=false, clause=null;
   function blocks(bs){return bs.map(b=>{
@@ -2301,7 +2314,7 @@ function officialBody(i,edit=false) {
     if(!edit && !selected)return '';
     if(!txt)return '';
     let checkNo=0;
-    let p=b.tokens.map(t=>typeof t==='string'?esc(t).replace(/\uf00d/g,()=>{const key='check_'+b.id+'_'+checkNo++;return edit?`<input type="checkbox" aria-label="انتخاب مدرک" data-document-check="${key}" ${i.form.values[key]==='yes'?'checked':''}>`:(i.form.values[key]==='yes'?'☑':'☐')}):officialField(i,t,edit)).join('');
+    let p=officialUnitTokens(i,b.tokens).map(t=>typeof t==='string'?esc(t).replace(/\uf00d/g,()=>{const key='check_'+b.id+'_'+checkNo++;return edit?`<input type="checkbox" aria-label="انتخاب مدرک" data-document-check="${key}" ${i.form.values[key]==='yes'?'checked':''}>`:(i.form.values[key]==='yes'?'☑':'☐')}):officialField(i,t,edit)).join('');
     p=p.replace(/سعيد فرزين/g,esc(officialIdentity(i).profile.name));
     if(isTitle && edit)p=`<label class="word-choice"><input type="checkbox" data-clause="${b.id}" ${selected?'checked':''}>${p}</label>`;
     let result='';
