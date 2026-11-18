@@ -1,6 +1,6 @@
 // Offline cache for the installable web-app build. The version below changes on every build,
 // so a new deploy replaces the old cache the next time the phone is online.
-const CACHE = 'inspection-checklist-fda950ea95';
+const CACHE = 'inspection-checklist-17d79ef1e3';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
